@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Avoir ou Être ?</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,"PingFang TC","Noto Sans TC",sans-serif;background:linear-gradient(160deg,#46178f,#7b2ff7 60%,#a855f7);color:#fff;min-height:100vh;min-height:100dvh}
+.wrap{max-width:720px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));min-height:100dvh;display:flex;flex-direction:column}
+.screen{display:none;flex:1;flex-direction:column}.screen.on{display:flex}
+h1{font-size:2.6rem;text-align:center;margin:28px 0 6px;text-shadow:0 4px 0 rgba(0,0,0,.25)}
+.sub{text-align:center;opacity:.9;margin:0 0 24px}
+.btn{border:0;border-radius:14px;padding:18px;font-size:1.15rem;font-weight:800;color:#fff;margin:8px 0;box-shadow:0 5px 0 rgba(0,0,0,.3);cursor:pointer;width:100%}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.3)}
+.k{background:#e21b3c}.p{background:#1368ce}.c{background:#26890c}.g{background:rgba(255,255,255,.2)}
+.best{text-align:center;background:rgba(0,0,0,.2);border-radius:12px;padding:10px;margin:14px 0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700}
+.pill{background:rgba(0,0,0,.25);border-radius:999px;padding:6px 12px}
+.icon{background:rgba(0,0,0,.25);border:0;color:#fff;border-radius:999px;width:42px;height:42px;font-size:1.2rem}
+.bar{height:10px;background:rgba(255,255,255,.25);border-radius:9px;margin:12px 0;overflow:hidden}.bar>i{display:block;height:100%;background:#ffd400;width:0;transition:width .3s}
+.q{background:#fff;color:#222;border-radius:16px;padding:22px 16px;font-size:1.45rem;font-weight:800;text-align:center;box-shadow:0 6px 0 rgba(0,0,0,.2);min-height:110px;display:flex;align-items:center;justify-content:center}
+.timer{width:64px;height:64px;border-radius:50%;background:#864cbf;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:900;margin:12px auto;border:4px solid #fff}
+.timer.low{background:#e21b3c;animation:pulse .5s infinite alternate}@keyframes pulse{to{transform:scale(1.1)}}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}.grid.long{grid-template-columns:1fr}
+.t{border:0;border-radius:12px;color:#fff;font-size:1.15rem;font-weight:800;min-height:84px;padding:12px;display:flex;align-items:center;gap:10px;text-align:left;box-shadow:0 5px 0 rgba(0,0,0,.3);transition:opacity .2s,transform .1s}
+.t:active{transform:translateY(3px)}.t svg{flex:0 0 30px;height:30px}
+.t0{background:#e21b3c}.t1{background:#1368ce}.t2{background:#d89e00}.t3{background:#26890c}
+.t.dim{opacity:.3}.t.right{outline:5px solid #fff;opacity:1}.t.wrong{opacity:.55}
+.fb{margin-top:12px;border-radius:14px;padding:14px;font-size:1.02rem;display:none}.fb.on{display:block}
+.fb.ok{background:#26890c}.fb.no{background:#c0122f}.fb b{font-size:1.25rem}.fb .zh{opacity:.95;margin-top:4px}
+.big{font-size:3.4rem;font-weight:900;text-align:center;margin:10px 0 0}
+.stats{display:flex;gap:10px;justify-content:center;margin:12px 0}.stats div{background:rgba(0,0,0,.25);border-radius:12px;padding:10px 14px;text-align:center}
+.rev{background:rgba(0,0,0,.2);border-radius:12px;padding:10px 14px;margin:6px 0;font-size:.95rem}.rev .a{color:#9effa0;font-weight:800}
+.panel{background:#fff;color:#222;border-radius:16px;padding:14px;margin:8px 0}
+table{width:100%;border-collapse:collapse;font-size:1.1rem}td,th{padding:7px;border-bottom:1px solid #eee;text-align:left}th{color:#46178f}
+.streak{animation:pop .4s}@keyframes pop{50%{transform:scale(1.3)}}
+</style></head><body><div class="wrap">
+
+<section id="start" class="screen on">
+ <div class="top"><span></span><button class="icon mute" aria-label="sound">🔊</button></div>
+ <h1>Avoir ou Être ?</h1><p class="sub">19 questions · avoir vs être · 有還是是？</p>
+ <button class="btn k" id="goK">⏱ Kahoot mode<br><small>20 s · speed points</small></button>
+ <button class="btn p" id="goP">📘 Practice mode<br><small>no timer · 練習模式</small></button>
+ <button class="btn g" id="goC">📋 Conjugation cheat-sheet</button>
+ <div class="best" id="bestBox"></div>
+</section>
+
+<section id="cheat" class="screen">
+ <h1 style="font-size:2rem">Conjugaison</h1>
+ <div class="panel"><table><tr><th>Avoir (有)</th><th>Être (是)</th></tr>
+ <tr><td>j'<b>ai</b></td><td>je <b>suis</b></td></tr><tr><td>tu <b>as</b></td><td>tu <b>es</b></td></tr>
+ <tr><td>il / elle <b>a</b></td><td>il / elle <b>est</b></td></tr><tr><td>nous <b>avons</b></td><td>nous <b>sommes</b></td></tr>
+ <tr><td>vous <b>avez</b></td><td>vous <b>êtes</b></td></tr><tr><td>ils / elles <b>ont</b></td><td>ils / elles <b>sont</b></td></tr></table></div>
+ <div class="panel"><b>Avoir</b>: possession, age, family, faim/soif — 擁有、年齡、家人、餓/渴<br><b>Être</b>: identity, job, nationality, state, place — 身分、職業、國籍、狀態、地點</div>
+ <button class="btn g" id="backC">← Retour</button>
+</section>
+
+<section id="quiz" class="screen">
+ <div class="top"><button class="icon" id="quit" aria-label="quit">✕</button><span class="pill" id="qn"></span><span class="pill" id="streak">🔥 0</span><span class="pill" id="pts">0</span><button class="icon mute">🔊</button></div>
+ <div class="bar"><i id="prog"></i></div>
+ <div class="q" id="qtext"></div>
+ <div class="timer" id="timer">20</div>
+ <div class="grid" id="tiles"></div>
+ <div class="fb" id="fb"></div>
+ <button class="btn c" id="next" style="display:none;margin-top:12px">Suivant →</button>
+</section>
+
+<section id="results" class="screen">
+ <h1 style="font-size:2rem" id="rTitle">Bravo !</h1>
+ <div class="big" id="rScore"></div>
+ <div class="stats"><div><b id="rAcc"></b><br>accuracy</div><div><b id="rStreak"></b><br>best streak</div><div><b id="rBest"></b><br>best score</div></div>
+ <div id="rMissed"></div>
+ <button class="btn k" id="retry">🔁 Retry missed only</button>
+ <button class="btn p" id="again">▶ Play again</button>
+ <button class="btn g" id="home">🏠 Menu</button>
+</section>
+</div>
+<script>
+const Q=[
+["Quelle phrase est correcte ?",["Le chef a un livre de cuisine","Le chef est un livre de cuisine","Le chef suis un livre de cuisine"],"Possession uses avoir: il a un livre.","擁有東西用 avoir：il a"],
+["J'___ 26 ans",["ai","suis","a","est"],"Age uses avoir: j'ai … ans.","年齡用 avoir：j'ai … ans"],
+["Quelle phrase est correcte ?",["Elle a trois chiens","Elle est trois chiens","Elle sont trois chiens"],"Having pets = possession → avoir: elle a.","養寵物＝擁有，用 avoir：elle a"],
+["Nous ___ deux enfants, Camille et Lily.",["avons","sommes","ont","sont"],"Family members use avoir: nous avons.","家人用 avoir：nous avons"],
+["Tu ___ 19 ans ?",["as","es","a","est"],"Age uses avoir: tu as … ans.","年齡用 avoir：tu as"],
+["Ils ___ une grande maison.",["ont","sont","avons","est"],"Possession → avoir: ils ont.","擁有用 avoir：ils ont"],
+["Je ___ étudiant.",["suis","ai","a","es"],"Identity / occupation uses être: je suis.","身分、職業用 être：je suis"],
+["Vous ___ faim ?",["avez","êtes","avons","ont"],"Hunger uses avoir: avoir faim.","「餓」用 avoir faim"],
+["Elle ___ française.",["est","a","ai","es"],"Nationality uses être: elle est.","國籍用 être：elle est"],
+["Nous ___ à Taipei.",["sommes","avons","sont","ont"],"Location uses être: nous sommes à…","在某地用 être：nous sommes"],
+["Mon frère ___ deux chats.",["a","est","ai","sont"],"Possession → avoir; mon frère = il → a.","擁有用 avoir；mon frère＝il → a"],
+["Vous ___ professeur ?",["êtes","avez","es","as"],"Profession uses être: vous êtes.","職業用 être：vous êtes"],
+["Marie et Paul ___ fatigués.",["sont","ont","avons","êtes"],"A state (tired) uses être; they = ils → sont.","狀態（累）用 être：ils sont"],
+["J'___ un rendez-vous demain.",["ai","suis","a","est"],"Having an appointment → avoir: j'ai.","有約會用 avoir：j'ai"],
+["Quelle phrase est correcte ?",["Il a 30 ans","Il est 30 ans","Il ai 30 ans"],"Age uses avoir: il a 30 ans.","年齡用 avoir：il a … ans"],
+["Quelle phrase est correcte ?",["Nous sommes malaisiens","Nous avons malaisiens","Nous sont malaisiens"],"Nationality uses être: nous sommes.","國籍用 être：nous sommes"],
+["Quelle phrase est correcte ?",["Tu as un vélo","Tu es un vélo","Tu a un vélo"],"Possession → avoir; with tu it's as.","擁有用 avoir；tu 配 as"],
+["Quelle phrase est correcte ?",["Elles ont soif","Elles sont soif","Elles a soif"],"Thirst uses avoir: avoir soif; elles → ont.","「渴」用 avoir soif：elles ont"],
+["Quelle phrase est correcte ?",["J'ai une sœur","Je suis une sœur","Je a une sœur"],"Family members use avoir: j'ai une sœur.","有兄弟姊妹用 avoir：j'ai"]
+].map((q,i)=>({id:i,q:q[0],c:q[1],ans:q[1][0],en:q[2],zh:q[3]}));
+const SH=['<svg viewBox="0 0 30 30"><polygon points="15,2 28,27 2,27" fill="#fff"/></svg>','<svg viewBox="0 0 30 30"><polygon points="15,1 29,15 15,29 1,15" fill="#fff"/></svg>','<svg viewBox="0 0 30 30"><circle cx="15" cy="15" r="13" fill="#fff"/></svg>','<svg viewBox="0 0 30 30"><rect x="3" y="3" width="24" height="24" fill="#fff"/></svg>'];
+const $=s=>document.querySelector(s);
+let mode,list,idx,score,streak,bestStreak,missed,tmr,tLeft,t0,locked,lastSet;
+let muted=localStorage.getItem('ae_mute')==='1',ac;
+function beep(f,d,type='sine',when=0){if(muted)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=f;o.connect(g);g.connect(ac.destination);const t=ac.currentTime+when;g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.start(t);o.stop(t+d)}catch(e){}}
+const sGood=()=>{beep(660,.12,'triangle');beep(880,.12,'triangle',.1);beep(1320,.2,'triangle',.2)},sBad=()=>{beep(220,.25,'sawtooth');beep(160,.35,'sawtooth',.2)},sTick=()=>beep(1000,.04,'square');
+function setMute(){document.querySelectorAll('.mute').forEach(b=>b.textContent=muted?'🔇':'🔊')}
+document.querySelectorAll('.mute').forEach(b=>b.onclick=()=>{muted=!muted;localStorage.setItem('ae_mute',muted?'1':'0');setMute()});setMute();
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));scrollTo(0,0)}
+function best(){return +localStorage.getItem('ae_best')||0}
+function renderBest(){const b=best(),a=localStorage.getItem('ae_bestacc');$('#bestBox').innerHTML=b||a?`🏆 Best score: <b>${b}</b>${a?` · best accuracy: <b>${a}%</b>`:''}`:'🏆 No best score yet — 加油！'}
+function start(m,set){mode=m;lastSet=set||Q;list=shuf(lastSet).map(q=>({...q,c:shuf(q.c)}));idx=score=streak=bestStreak=0;missed=[];$('#timer').style.display=m==='k'?'flex':'none';show('quiz');ask()}
+function ask(){locked=false;const q=list[idx];$('#qn').textContent=`${idx+1}/${list.length}`;$('#prog').style.width=(idx/list.length*100)+'%';$('#qtext').textContent=q.q;$('#fb').className='fb';$('#next').style.display='none';$('#pts').textContent=score;
+ const g=$('#tiles');g.className='grid'+(q.c.some(c=>c.length>12)?' long':'');g.innerHTML='';
+ q.c.forEach((c,i)=>{const b=document.createElement('button');b.className='t t'+i;b.innerHTML=SH[i]+'<span></span>';b.lastChild.textContent=c;b.onclick=()=>answer(c,b);g.appendChild(b)});
+ if(mode==='k'){tLeft=20;t0=performance.now();upd();clearInterval(tmr);tmr=setInterval(()=>{tLeft--;upd();if(tLeft<=5&&tLeft>0)sTick();if(tLeft<=0)answer(null,null)},1000)}}
+function upd(){const t=$('#timer');t.textContent=tLeft;t.classList.toggle('low',tLeft<=5)}
+function answer(c,btn){if(locked)return;locked=true;clearInterval(tmr);const q=list[idx],ok=c===q.ans;let gain=0;
+ document.querySelectorAll('.t').forEach(b=>{const v=b.lastChild.textContent;b.disabled=true;if(v===q.ans)b.classList.add('right');else if(b===btn)b.classList.add('wrong');else b.classList.add('dim')});
+ if(ok){streak++;bestStreak=Math.max(bestStreak,streak);if(mode==='k'){const el=(performance.now()-t0)/1000;gain=Math.round(1000*(1-el/40))+(streak>1?Math.min(streak-1,5)*100:0)}else gain=100;score+=gain;sGood()}else{streak=0;missed.push(q);sBad()}
+ const s=$('#streak');s.textContent='🔥 '+streak;s.classList.remove('streak');void s.offsetWidth;if(ok)s.classList.add('streak');$('#pts').textContent=score;
+ const fb=$('#fb');fb.className='fb on '+(ok?'ok':'no');fb.innerHTML=`<b>${ok?'✓ Correct !':(c===null?'⏰ Temps écoulé !':'✗ Raté')}</b>${ok&&mode==='k'?` +${gain}`:''}<div>Answer: <b class="ans"></b></div><div class="en"></div><div class="zh"></div>`;
+ fb.querySelector('.ans').textContent=q.ans;fb.querySelector('.en').textContent=q.en;fb.querySelector('.zh').textContent=q.zh;
+ $('#next').style.display='block';$('#next').textContent=idx+1<list.length?'Suivant →':'Résultats 🏁'}
+$('#next').onclick=()=>{idx++;if(idx<list.length)ask();else results()};
+function results(){$('#prog').style.width='100%';const n=list.length,cr=n-missed.length,acc=Math.round(cr/n*100);
+ if(score>best())localStorage.setItem('ae_best',score);if(lastSet===Q&&acc>(+localStorage.getItem('ae_bestacc')||0))localStorage.setItem('ae_bestacc',acc);
+ $('#rTitle').textContent=acc===100?'Parfait ! 🎉':acc>=70?'Bravo ! 👏':'Continue ! 💪';$('#rScore').textContent=score+' pts';$('#rAcc').textContent=`${acc}% (${cr}/${n})`;$('#rStreak').textContent=bestStreak;$('#rBest').textContent=best();
+ const m=$('#rMissed');m.innerHTML=missed.length?'<h3>À revoir · 需複習</h3>':'<p style="text-align:center">No mistakes! 全對！</p>';
+ missed.forEach(q=>{const d=document.createElement('div');d.className='rev';d.innerHTML='<div class="qq"></div><div class="a"></div><div class="x"></div>';d.querySelector('.qq').textContent=q.q;d.querySelector('.a').textContent='✓ '+q.ans;d.querySelector('.x').textContent=q.en+' / '+q.zh;m.appendChild(d)});
+ $('#retry').style.display=missed.length?'block':'none';show('results');if(acc>=70)sGood()}
+$('#goK').onclick=()=>start('k');$('#goP').onclick=()=>start('p');$('#goC').onclick=()=>show('cheat');$('#backC').onclick=()=>show('start');
+$('#retry').onclick=()=>start(mode,missed.map(q=>Q[q.id]));$('#again').onclick=()=>start(mode);$('#home').onclick=()=>{renderBest();show('start')};
+$('#quit').onclick=()=>{clearInterval(tmr);renderBest();show('start')};renderBest();
+</script></body></html>

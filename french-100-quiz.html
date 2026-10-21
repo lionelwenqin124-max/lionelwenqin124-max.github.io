@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Le Grand Quiz de Français · 100</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,"PingFang TC","Noto Sans TC",sans-serif;background:linear-gradient(160deg,#46178f,#7b2ff7 60%,#a855f7);color:#fff;min-height:100vh;min-height:100dvh}
+.wrap{max-width:720px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom));min-height:100dvh;display:flex;flex-direction:column}
+.screen{display:none;flex:1;flex-direction:column}.screen.on{display:flex}
+h1{font-size:2.2rem;text-align:center;margin:14px 0 4px;text-shadow:0 4px 0 rgba(0,0,0,.25)}
+h3{margin:14px 0 6px}
+.sub{text-align:center;opacity:.9;margin:0 0 12px}
+.btn{border:0;border-radius:14px;padding:15px;font-size:1.1rem;font-weight:800;color:#fff;margin:6px 0;box-shadow:0 5px 0 rgba(0,0,0,.3);cursor:pointer;width:100%;font-family:inherit}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.3)}
+.btn small{font-weight:600;opacity:.9}
+.k{background:#e21b3c}.p{background:#1368ce}.c{background:#26890c}.y{background:#d89e00}.g{background:rgba(255,255,255,.2)}.dk{background:#2b0b5e}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:8px}.modes .btn{margin:0;min-height:84px}
+.topics{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x mandatory}
+.chip{flex:0 0 auto;border:0;border-radius:14px;background:rgba(255,255,255,.18);color:#fff;padding:10px 12px;font-weight:700;font-size:.95rem;text-align:left;min-width:120px;scroll-snap-align:start;font-family:inherit}
+.chip.sel{background:#fff;color:#46178f;box-shadow:0 4px 0 rgba(0,0,0,.25)}.chip small{display:block;font-weight:500;opacity:.8;font-size:.78rem}
+.best{text-align:center;background:rgba(0,0,0,.2);border-radius:12px;padding:10px;margin:10px 0;font-size:.95rem}
+.top{display:flex;justify-content:space-between;align-items:center;gap:6px;font-weight:700}
+.pill{background:rgba(0,0,0,.25);border-radius:999px;padding:6px 10px;white-space:nowrap}
+.icon{background:rgba(0,0,0,.25);border:0;color:#fff;border-radius:999px;width:44px;height:44px;font-size:1.2rem;flex:0 0 44px}
+.bar{height:10px;background:rgba(255,255,255,.25);border-radius:9px;margin:10px 0;overflow:hidden}.bar>i{display:block;height:100%;background:#ffd400;width:0;transition:width .3s}
+.tag{font-size:.85rem;opacity:.9;text-align:center;margin-bottom:6px}
+.q{position:relative;background:#fff;color:#222;border-radius:16px;padding:20px 50px 20px 16px;font-size:1.35rem;font-weight:800;text-align:center;box-shadow:0 6px 0 rgba(0,0,0,.2);min-height:100px;display:flex;align-items:center;justify-content:center}
+.q .say{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:#ede4ff;color:#46178f}
+.timer{width:58px;height:58px;border-radius:50%;background:#864cbf;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:900;margin:10px auto;border:4px solid #fff}
+.timer.low{background:#e21b3c;animation:pulse .5s infinite alternate}@keyframes pulse{to{transform:scale(1.1)}}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}.grid.long{grid-template-columns:1fr}
+.t{border:0;border-radius:12px;color:#fff;font-size:1.12rem;font-weight:800;min-height:78px;padding:12px;display:flex;align-items:center;gap:10px;text-align:left;box-shadow:0 5px 0 rgba(0,0,0,.3);transition:opacity .2s,transform .1s;font-family:inherit}
+.t:active{transform:translateY(3px)}.t svg{flex:0 0 28px;height:28px}
+.t0{background:#e21b3c}.t1{background:#1368ce}.t2{background:#d89e00}.t3{background:#26890c}
+.t.dim{opacity:.3}.t.right{outline:5px solid #fff;opacity:1}.t.wrong{opacity:.55}
+.tfv{background:#26890c;font-size:1.6rem;justify-content:center;min-height:110px}.tff{background:#e21b3c;font-size:1.6rem;justify-content:center;min-height:110px}
+.inp{width:100%;font-size:1.4rem;padding:16px;border-radius:14px;border:4px solid #fff;margin-top:10px;font-family:inherit;text-align:center}
+.inp.ok{border-color:#26ff6a}.inp.no{border-color:#ff3355}
+.acc{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px}.acc button{border:0;border-radius:10px;width:44px;height:44px;font-size:1.2rem;background:rgba(255,255,255,.25);color:#fff}
+.row2{display:grid;grid-template-columns:1fr 2fr;gap:8px}
+.line{min-height:66px;background:rgba(0,0,0,.2);border:3px dashed rgba(255,255,255,.5);border-radius:14px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px;min-height:56px}
+.w{border:0;border-radius:12px;background:#fff;color:#46178f;font-size:1.2rem;font-weight:800;padding:12px 14px;box-shadow:0 4px 0 rgba(0,0,0,.3);font-family:inherit}
+.w.used{visibility:hidden}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.mcol{display:flex;flex-direction:column;gap:10px}
+.m{border:0;border-radius:12px;background:#fff;color:#2b0b5e;font-weight:800;font-size:1.02rem;min-height:62px;padding:8px;box-shadow:0 4px 0 rgba(0,0,0,.3);font-family:inherit}
+.m.sel{background:#ffd400}.m.done{background:#26890c;color:#fff;opacity:.85}.m.bad{background:#e21b3c;color:#fff;animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.play{width:120px;height:120px;border-radius:50%;border:6px solid #fff;background:#1368ce;color:#fff;font-size:3rem;margin:4px auto 6px;display:block;box-shadow:0 6px 0 rgba(0,0,0,.3)}
+.fb{margin-top:12px;border-radius:14px;padding:14px;font-size:1.02rem;display:none}.fb.on{display:block}
+.fb.ok{background:#26890c}.fb.no{background:#c0122f}.fb b{font-size:1.2rem}.fb .zh{margin-top:4px}
+.big{font-size:3.2rem;font-weight:900;text-align:center;margin:6px 0 0}
+.stats{display:flex;gap:8px;justify-content:center;margin:12px 0;flex-wrap:wrap}.stats div{background:rgba(0,0,0,.25);border-radius:12px;padding:10px 12px;text-align:center}
+.rev{background:rgba(0,0,0,.2);border-radius:12px;padding:10px 14px;margin:6px 0;font-size:.95rem}.rev .a{color:#9effa0;font-weight:800}.rev.x{border-left:6px solid #ff3355}.rev.v{border-left:6px solid #26ff6a}
+.panel{background:#fff;color:#222;border-radius:16px;padding:14px;margin:8px 0}
+table{width:100%;border-collapse:collapse;font-size:1.05rem}td,th{padding:6px;border-bottom:1px solid #eee;text-align:left}th{color:#46178f}
+.fr{color:#46178f;font-weight:700;cursor:pointer;text-decoration:underline dotted}
+.streak{animation:pop .4s}@keyframes pop{50%{transform:scale(1.35)}}
+.lives{letter-spacing:2px}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:12px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:9;max-width:90%;text-align:center}
+#toast.on{opacity:.92}
+#conf{position:fixed;inset:0;pointer-events:none;z-index:8}
+.combo{position:fixed;top:30%;left:0;right:0;text-align:center;font-size:2.6rem;font-weight:900;text-shadow:0 4px 0 rgba(0,0,0,.3);pointer-events:none;animation:combo 1.2s forwards;z-index:9}
+@keyframes combo{0%{transform:scale(.3);opacity:0}30%{transform:scale(1.2);opacity:1}100%{transform:translateY(-60px);opacity:0}}
+</style></head><body><canvas id="conf"></canvas><div id="toast"></div><div class="wrap">
+
+<section id="start" class="screen on">
+ <div class="top"><button class="icon" id="goC" aria-label="cheat sheet">📋</button><span class="pill" id="mast"></span><button class="icon mute" aria-label="sound">🔊</button></div>
+ <h1>Le Grand Quiz 🇫🇷</h1><p class="sub">100 questions · 法語百題挑戰</p>
+ <div style="font-weight:800;margin:4px 0">1 · Choisis un thème <small style="opacity:.8">選主題</small></div>
+ <div class="topics" id="topics"></div>
+ <div style="font-weight:800;margin:4px 0 8px">2 · Choisis un mode <small style="opacity:.8">選模式</small></div>
+ <div class="modes">
+  <button class="btn k" id="goK">⏱ Kahoot<br><small>timer + speed points</small></button>
+  <button class="btn p" id="goP">📘 Practice<br><small>no timer · 練習</small></button>
+  <button class="btn y" id="goQ">⚡ Quick 10<br><small>10 random · 快速</small></button>
+  <button class="btn c" id="goS">❤️ Survival<br><small>3 lives · 生存</small></button>
+ </div>
+ <button class="btn dk" id="goR" style="margin-top:10px">🔁 Review my mistakes <span id="mcount"></span></button>
+ <div class="best" id="bestBox"></div>
+ <button class="btn g" id="reset" style="font-size:.9rem;padding:10px">Reset progress · 重設進度</button>
+</section>
+
+<section id="cheat" class="screen">
+ <h1 style="font-size:1.9rem">Aide-mémoire 📋</h1><p class="sub">Tap French words to hear them · 點法文聽發音</p>
+ <div class="panel"><table><tr><th>Être (是)</th><th>Avoir (有)</th></tr>
+ <tr><td class="fr">je suis</td><td class="fr">j'ai</td></tr><tr><td class="fr">tu es</td><td class="fr">tu as</td></tr>
+ <tr><td class="fr">il / elle / on est</td><td class="fr">il / elle / on a</td></tr><tr><td class="fr">nous sommes</td><td class="fr">nous avons</td></tr>
+ <tr><td class="fr">vous êtes</td><td class="fr">vous avez</td></tr><tr><td class="fr">ils / elles sont</td><td class="fr">ils / elles ont</td></tr></table>
+ <p><b>Être</b>: identity, job (no article!), nationality, state, place — 身分、職業、國籍、狀態、地點<br><b>Avoir</b>: possession, age, family, faim / soif — 擁有、年齡、家人、餓/渴</p></div>
+ <div class="panel"><b>Masculin → féminin</b><table>
+ <tr><td>+e</td><td class="fr">grand → grande</td></tr><tr><td>-e = -e</td><td class="fr">belge, suisse, sympathique</td></tr>
+ <tr><td>-ien → -ienne</td><td class="fr">italien → italienne</td></tr><tr><td>-eur → -euse</td><td class="fr">serveur → serveuse</td></tr>
+ <tr><td>-teur → -trice</td><td class="fr">acteur → actrice</td></tr><tr><td>-er → -ère</td><td class="fr">boulanger → boulangère</td></tr>
+ <tr><td>irrégulier</td><td class="fr">beau → belle, vieux → vieille, blanc → blanche, gentil → gentille</td></tr></table>
+ <b>Pluriel</b>: +s (grands) · -s/-x = (français, vieux) · -eau → -eaux (beaux) · garçon + fille → masculin</div>
+ <div class="panel"><b>Articles</b>: un (m.) · une (f.) · des (pl.) · le / la / l' / les<br><b>Négation</b>: <span class="fr">je ne suis pas</span> · <span class="fr">il n'est pas</span><br><b>Question</b>: <span class="fr">Est-ce que vous êtes japonais ?</span><br><b>Tu / vous / on</b>: tu 熟人 · vous 您/你們（客人一律 vous）· on = nous / les gens</div>
+ <div class="panel"><b>Restaurant & repas</b><br><span class="fr">le petit-déjeuner</span> 早餐 · <span class="fr">le déjeuner</span> 午餐 · <span class="fr">le dîner</span> 晚餐<br><span class="fr">Voulez-vous une omelette ou un œuf au plat ?</span><br><span class="fr">En voulez-vous ?</span> 您要一些嗎？<br><span class="fr">Je voudrais…, s'il vous plaît.</span><br><span class="fr">La soupe du jour est…</span><br><span class="fr">J'ai vingt et un ans. Je suis en quatrième année.</span></div>
+ <button class="btn g" id="backC">← Retour</button>
+</section>
+
+<section id="quiz" class="screen">
+ <div class="top"><button class="icon" id="quit" aria-label="quit">✕</button><span class="pill" id="qn"></span><span class="pill lives" id="lives"></span><span class="pill" id="streak">🔥 0</span><span class="pill" id="pts">0</span><button class="icon mute">🔊</button></div>
+ <div class="bar"><i id="prog"></i></div>
+ <div class="tag" id="tag"></div>
+ <div class="q" id="qbox"><span id="qtext"></span><button class="icon say" id="sayQ" aria-label="listen">🔈</button></div>
+ <div class="timer" id="timer">20</div>
+ <div id="area"></div>
+ <div class="fb" id="fb"></div>
+ <button class="btn c" id="next" style="display:none;margin-top:12px">Suivant →</button>
+</section>
+
+<section id="results" class="screen">
+ <h1 style="font-size:2rem" id="rTitle">Bravo !</h1>
+ <div class="big" id="rScore"></div>
+ <div class="stats"><div><b id="rAcc"></b><br>accuracy</div><div><b id="rStreak"></b><br>best streak</div><div><b id="rBest"></b><br>topic best</div></div>
+ <button class="btn k" id="retry">🔁 Retry missed only</button>
+ <button class="btn p" id="again">▶ Play again</button>
+ <button class="btn g" id="home">🏠 Menu</button>
+ <h3>Révision · 回顧</h3><div id="rList"></div>
+</section>
+</div>
+<script>
+const CATS={E:["🧍","Être & pronoms","être 與主詞"],A:["⚖️","Avoir ou être ?","有還是是"],G:["♀️","Masculin / féminin","陰陽性"],P:["👥","Le pluriel","複數"],N:["❓","Questions, négation, tu/vous/on","問句·否定·稱呼"],R:["🍜","Restaurant, hôtel & repas","餐廳·飯店·三餐"],D:["📅","Nombres, âge, dates & salutations","數字·年齡·日期·問候"]};
+const Q=[];
+const mc=(k,q,c,en,zh)=>Q.push({t:"mc",k,q,c,ans:c[0],en,zh});
+const tf=(k,q,a,en,zh)=>Q.push({t:"tf",k,q,c:["Vrai","Faux"],ans:a?"Vrai":"Faux",en,zh});
+const ty=(k,q,a,en,zh)=>Q.push({t:"type",k,q,a:[].concat(a),ans:[].concat(a)[0],en,zh});
+const od=(k,p,s,en,zh)=>Q.push({t:"order",k,q:p,w:s.split(" "),ans:s,en,zh});
+const mt=(k,q,pairs,en,zh)=>Q.push({t:"match",k,q,pairs,ans:pairs.map(p=>p[0]+" = "+p[1]).join(" · "),en,zh});
+const ls=(k,say,c,en,zh)=>Q.push({t:"listen",k,q:"🎧 Écoute et choisis ce que tu entends.",say,c,ans:c[0],en,zh});
+// ---- E : être & pronoms (16)
+mc("E","Je ___ étudiant.",["suis","ai","a","es"],"Identity / occupation uses être: je suis.","身分、職業用 être：je suis");
+mc("E","Vous ___ professeur ?",["êtes","avez","es","as"],"Profession uses être: vous êtes.","職業用 être：vous êtes");
+mc("E","Marie et Paul ___ fatigués.",["sont","ont","avons","êtes"],"A state (tired) uses être; Marie et Paul = ils → sont.","狀態（累）用 être：ils sont");
+ty("E","Nous ___ fatigués.","sommes","nous → sommes (être).","nous 配 sommes");
+ty("E","Tu ___ prêt ?","es","tu → es (être). Tu es prêt ? = Are you ready?","tu 配 es");
+mc("E","Ils ___ italiens.",["sont","est","sommes","êtes"],"ils → sont.","ils／elles 配 sont");
+mt("E","Associe le pronom et sa traduction.",[["je","我 · I"],["tu","你/妳 · you"],["nous","我們 · we"],["ils","他們 · they"]],"Subject pronouns: je, tu, il/elle, nous, vous, ils/elles.","主詞代名詞");
+mt("E","Associe le pronom et le verbe être.",[["je","suis"],["tu","es"],["nous","sommes"],["vous","êtes"]],"Être: je suis, tu es, il est, nous sommes, vous êtes, ils sont.","être 的變化");
+od("E","Are you a doctor? (polite)","Vous êtes médecin ?","Vous êtes + profession, no article.","職業前不加冠詞");
+od("E","We are very tired.","Nous sommes très fatigués","nous sommes + adjective (plural).","nous sommes＋形容詞複數");
+tf("E","« Vous êtes » se prononce avec une liaison : « vou-z-êtes ».",true,"The s of vous links to êtes: [vu.zɛt].","vous 的 s 與 êtes 連音，唸 vouzêtes");
+ls("E","Elles sont blondes.",["Elles sont blondes.","Elle est blonde.","Ils sont blonds.","Elles sont grandes."],"Elles sont blondes = They (f.) are blond.","她們是金髮");
+ls("E","Vous êtes français ?",["Vous êtes français ?","Vous avez faim ?","Nous sommes français.","Tu es français ?"],"Vous êtes français ? = Are you French?","您是法國人嗎？");
+mc("E","Pour se présenter, on dit : « ___ Kenji Takashi. »",["Je suis","Moi suis","Je est","J'ai"],"The textbook: say « Je suis Kenji », not « Moi suis ».","課本：說 Je suis，不說 Moi suis");
+tf("E","On dit « Je suis médecin. » (sans « un ») pour une profession.",true,"No article before a profession after être: je suis médecin.","être＋職業不加 un/une");
+ty("E","Léo ___ petit.","est","Léo = il → est.","Léo＝il，配 est");
+// ---- A : avoir ou être (16)
+mc("A","Quelle phrase est correcte ?",["Le chef a un livre de cuisine","Le chef est un livre de cuisine","Le chef suis un livre de cuisine"],"Possession uses avoir: il a un livre.","擁有東西用 avoir：il a");
+mc("A","J'___ 26 ans",["ai","suis","a","est"],"Age uses avoir: j'ai … ans.","年齡用 avoir：j'ai … ans");
+mc("A","Quelle phrase est correcte ?",["Elle a trois chiens","Elle est trois chiens","Elle sont trois chiens"],"Having pets = possession → avoir: elle a.","養寵物＝擁有，用 avoir");
+mc("A","Nous ___ deux enfants, Camille et Lily.",["avons","sommes","ont","sont"],"Family members use avoir: nous avons.","家人用 avoir：nous avons");
+ty("A","Tu ___ 19 ans ?","as","Age uses avoir: tu as … ans.","年齡用 avoir：tu as");
+od("A","They have a big house.","Ils ont une grande maison","Possession → avoir: ils ont.","擁有用 avoir：ils ont");
+mc("A","Vous ___ faim ?",["avez","êtes","avons","ont"],"Hunger uses avoir: avoir faim.","「餓」用 avoir faim");
+mc("A","Elle ___ française.",["est","a","ai","es"],"Nationality uses être: elle est.","國籍用 être");
+ty("A","Nous ___ à Taipei.","sommes","Location uses être: nous sommes à…","在某地用 être");
+mc("A","Mon frère ___ deux chats.",["a","est","ai","sont"],"Possession → avoir; mon frère = il → a.","mon frère＝il → a");
+mc("A","J'___ un rendez-vous demain.",["ai","suis","a","est"],"Having an appointment → avoir: j'ai.","有約用 avoir");
+mc("A","Quelle phrase est correcte ?",["Il a 30 ans","Il est 30 ans","Il ai 30 ans"],"Age uses avoir: il a 30 ans.","年齡用 avoir");
+mc("A","Quelle phrase est correcte ?",["Nous sommes malaisiens","Nous avons malaisiens","Nous sont malaisiens"],"Nationality uses être: nous sommes.","國籍用 être");
+mc("A","Quelle phrase est correcte ?",["Tu as un vélo","Tu es un vélo","Tu a un vélo"],"Possession → avoir; with tu it's as.","tu 配 as");
+ls("A","Elles ont soif.",["Elles ont soif.","Elles ont faim.","Elle a soif.","Ils sont six."],"Avoir soif = to be thirsty; elles ont [ɛl.zɔ̃].","「渴」用 avoir soif");
+mc("A","Quelle phrase est correcte ?",["J'ai une sœur","Je suis une sœur","Je a une sœur"],"Family members use avoir: j'ai une sœur.","兄弟姊妹用 avoir");
+// ---- G : masculin / féminin (18)
+mc("G","Il est étudiant. Elle est ___.",["étudiante","étudiant","étudiantes","étudiane"],"Feminine: add -e → étudiante.","陰性加 -e");
+mc("G","Il est italien. Elle est ___.",["italienne","italiene","italiennes","italien"],"-ien → -ienne.","-ien 變 -ienne");
+ty("G","Il est acteur. Elle est ___.","actrice","-teur → -trice (acteur → actrice).","-teur 變 -trice");
+ty("G","Il est boulanger. Elle est ___.","boulangère","-er → -ère (boulanger → boulangère).","-er 變 -ère");
+mc("G","Il est serveur. Elle est ___.",["serveuse","serveure","servatrice","serveuze"],"-eur → -euse (serveur → serveuse).","-eur 變 -euse");
+tf("G","Le féminin de « professeur » est « professeuse ».",false,"No: elle est professeur (or professeure). Some professions don't take -euse.","professeur 沒有 professeuse，女性仍是 professeur(e)");
+tf("G","« Belge » est identique au masculin et au féminin.",true,"Adjectives ending in -e don't change: il/elle est belge.","以 -e 結尾不變");
+mc("G","Il est suisse. Elle est ___.",["suisse","suissienne","suissine","suissée"],"Ends in -e → no change: suisse.","以 -e 結尾不變");
+mt("G","Associe le masculin et le féminin.",[["français","française"],["japonais","japonaise"],["coréen","coréenne"],["américain","américaine"]],"-ais → -aise, -éen → -éenne, -ain → -aine.","國籍的陰性變化");
+mt("G","Associe la profession et sa traduction.",[["médecin","醫生 · doctor"],["chimiste","化學家 · chemist"],["avocat","律師 · lawyer"],["chanteur","歌手 · singer"]],"Profession vocabulary from unit 1–2.","職業單字");
+mc("G","Il est beau. Elle est ___.",["belle","beau","beaue","bele"],"Irregular: beau → belle.","不規則：beau → belle");
+mc("G","Il est vieux. Elle est ___.",["vieille","vieuse","vieuxe","vielle"],"Irregular: vieux → vieille.","不規則：vieux → vieille");
+ty("G","Il est gentil. Elle est ___.","gentille","-il → -ille: gentil → gentille.","gentil → gentille");
+mc("G","Quel est le féminin de « musicien » ?",["musicienne","musiciene","musicientrice","musicieuse"],"-ien → -ienne: musicienne.","-ien → -ienne");
+ls("G","Elle est taïwanaise.",["Elle est taïwanaise.","Il est taïwanais.","Elle est japonaise.","Elles sont taïwanaises."],"Elle est taïwanaise: the final s is pronounced [z] in the feminine.","陰性 -aise 的 s 要發 [z]");
+od("G","My mother is French.","Ma mère est française","Mère is feminine → française.","mère 是陰性 → française");
+tf("G","Il est sympathique → Elle est sympathique (pas de changement).",true,"Ends in -e → same form.","以 -e 結尾不變");
+mc("G","Il est blanc. La neige est ___.",["blanche","blance","blanque","blanc"],"Irregular: blanc → blanche.","不規則：blanc → blanche");
+// ---- P : pluriel (12)
+mc("P","Il est grand. Ils sont ___.",["grands","grand","grandes","grandx"],"Plural: add -s.","複數加 -s");
+mc("P","Elle est grande. Elles sont ___.",["grandes","grande","grands","grandees"],"Feminine plural: -es.","陰性複數 -es");
+tf("P","Il est français → Ils sont français (on n'ajoute pas de -s).",true,"Words ending in -s or -x don't change in the plural.","-s / -x 結尾複數不變");
+ty("P","Il est beau. Ils sont ___.","beaux","-eau → -eaux.","-eau 複數加 -x");
+mc("P","Max et Léa sont ___. (blond)",["blonds","blondes","blond","blonde"],"Mixed group (masc. + fem.) → masculine plural.","男女混合用陽性複數");
+ty("P","Elle est fatiguée. Elles sont ___.","fatiguées","Feminine plural: fatigué + e + s.","陰性複數 fatiguées");
+od("P","They (m.) are tall and blond.","Ils sont grands et blonds","Both adjectives agree: grands, blonds.","兩個形容詞都要配合");
+mc("P","Il est vieux. Ils sont ___.",["vieux","vieuxs","vieils","vieuxes"],"Ends in -x → no change.","-x 結尾不變");
+tf("P","Le pluriel de « il est gentil » est « ils sont gentils ».",true,"Regular plural: add -s.","一般加 -s");
+mc("P","Tania et Zoé ___ brunes.",["sont","est","ont","sommes"],"Two people = elles → sont.","兩人＝elles → sont");
+mt("P","Associe le singulier et le pluriel.",[["il est","ils sont"],["elle est","elles sont"],["je suis","nous sommes"],["tu es","vous êtes"]],"Singular ↔ plural forms of être.","être 單複數");
+ty("P","Elle est française. Elles sont ___.","françaises","Feminine plural: française + s.","françaises");
+// ---- N : questions, négation, tu/vous/on (14)
+mc("N","Je suis brun. → Forme négative :",["Je ne suis pas brun.","Je suis ne pas brun.","Je pas suis brun.","Je ne suis brun pas."],"Negation: ne + verb + pas.","否定：ne＋動詞＋pas");
+ty("N","Il ___ est pas riche.",["n'","n"],"Ne → n' before a vowel: il n'est pas.","母音前 ne 變 n'");
+od("N","I am not Japanese.","Je ne suis pas japonais","ne + suis + pas.","ne … pas 包住動詞");
+mc("N","Est-ce que ___ êtes japonais ?",["vous","tu","il","nous"],"êtes goes with vous.","êtes 配 vous");
+mc("N","À un client au restaurant, on dit :",["Vous voulez un café ?","Tu veux un café ?","Tu voulez un café ?"],"With customers, always vous.","對客人一律用 vous");
+tf("N","On utilise « tu » avec son professeur à l'université.",false,"Use vous with a teacher or older person unless invited to use tu.","對老師、長輩用 vous");
+tf("N","À l'oral, « On est fatigués » peut vouloir dire « Nous sommes fatigués ».",true,"On often replaces nous in speech; the verb is 3rd person singular.","口語 on＝nous，動詞用第三人稱單數");
+mc("N","On ___ taïwanais.",["est","sont","sommes","es"],"On takes the il/elle form: on est.","on 配 est");
+tf("N","« Est-ce que vous êtes français ? » et « Vous êtes français ? » ont le même sens.",true,"Est-ce que + statement = a yes/no question; rising intonation works too.","兩種問法意思一樣");
+ls("N","Je ne suis pas professeur.",["Je ne suis pas professeur.","Je suis professeur.","Tu n'es pas professeur.","Je ne suis pas chanteur."],"Je ne suis pas professeur = I'm not a teacher.","我不是老師");
+ty("N","La chambre est grande. → La chambre ___ pas grande.",["n'est"],"ne + est → n'est … pas.","n'est pas");
+mc("N","« Vous êtes prêt, monsieur Meyer ? » — Ici « vous » est :",["poli (une personne)","pluriel (plusieurs personnes)","familier (un ami)"],"One person (monsieur, prêt) → polite vous.","一個人＋禮貌 → 您");
+mt("N","Associe le mot et son usage.",[["tu","familier · 熟人"],["vous (1 personne)","poli · 您"],["vous (2+ personnes)","pluriel · 你們"],["on","nous / les gens · 我們/人們"]],"tu familiar, vous polite or plural, on = we / people.","tu／vous／on 用法");
+od("N","Are you a student? (familiar)","Est-ce que tu es étudiant ?","Est-ce que + subject + verb.","Est-ce que＋主詞＋動詞");
+// ---- R : restaurant, hôtel & repas (12)
+mc("R","Voulez-vous une omelette ou un œuf au ___ ?",["plat","pain","lit","bol"],"Un œuf au plat = a fried egg (sunny side up).","荷包蛋 œuf au plat");
+mt("R","Associe le repas et sa traduction.",[["le petit-déjeuner","早餐 · breakfast"],["le déjeuner","午餐 · lunch"],["le dîner","晚餐 · dinner"],["la soupe du jour","今日湯品 · soup of the day"]],"Les trois repas: petit-déjeuner, déjeuner, dîner.","三餐");
+tf("R","« En voulez-vous ? » veut dire « Do you want some? ».",true,"En replaces « some of it »: En voulez-vous ? = Would you like some?","en＝一些（那個東西）");
+mc("R","Nouilles au bœuf ___",["taïwanaises","taïwanais","taïwanaise","taïwanaisent"],"Agrees with nouilles (feminine plural).","配合 nouilles（陰性複數）");
+od("R","You can help yourself at the buffet.","Vous pouvez vous servir au buffet","vous pouvez + vous servir (to help yourself).","vous servir＝自取");
+mt("R","Associe le plat et sa traduction.",[["les calamars","魷魚 · squid"],["le maquereau frit","炸鯖魚 · fried mackerel"],["nouilles en soupe claire","清湯麵 · clear soup noodles"],["soupe de nouilles végétariennes","素食湯麵 · vegetarian noodle soup"]],"Menu vocabulary from class.","菜單單字");
+ls("R","La soupe du jour est la soupe de poisson.",["La soupe du jour est la soupe de poisson.","La soupe du jour est la soupe de légumes.","La soupe du jour est la soupe à l'oignon.","La soupe du jour est la soupe de nouilles."],"Poisson = fish.","今日湯品是魚湯");
+mc("R","Pour commander poliment : « Je ___ un café, s'il vous plaît. »",["voudrais","voudrez","voulons","voulez"],"Je voudrais = I would like (polite).","Je voudrais＝我想要（禮貌）");
+tf("R","Le « dîner » est le repas du matin.",false,"Le dîner = dinner. The morning meal is le petit-déjeuner.","早餐是 petit-déjeuner");
+mc("R","« En attendant votre commande » veut dire :",["While waiting for your order","After your order","Instead of your order","Before you pay"],"En attendant = while waiting.","在等您的餐點時");
+mc("R","Dans un bon hôtel : « L'eau est chaude. » Dans un mauvais hôtel :",["L'eau n'est pas chaude.","L'eau ne pas est chaude.","L'eau est ne pas chaude.","L'eau n'est chaude pas."],"n' + est + pas.","n'est pas");
+ls("R","Je voudrais un œuf au plat, s'il vous plaît.",["Je voudrais un œuf au plat, s'il vous plaît.","Je voudrais une omelette, s'il vous plaît.","Je voudrais un café, s'il vous plaît.","Je voudrais des calamars, s'il vous plaît."],"Œuf au plat = fried egg.","我想要荷包蛋");
+// ---- D : nombres, âge, dates & salutations (12)
+ls("D","J'ai vingt et un ans.",["J'ai 21 ans.","J'ai 22 ans.","J'ai 12 ans.","J'ai 20 ans."],"Vingt et un = 21. Age uses avoir.","21 歲");
+mc("D","Je suis en ___ année. (4th year)",["quatrième","quatre","quatrièmes","quarante"],"Ordinal: quatre → quatrième.","序數 quatrième");
+tf("D","« Un an » et « une année » veulent tous les deux dire « year ».",true,"An for counting (21 ans), année for duration/descriptions (4e année).","an 用於計數，année 強調期間");
+mt("D","Associe le nombre.",[["treize","13"],["quinze","15"],["seize","16"],["dix-sept","17"]],"11–16 have their own names; 17 = dix-sept.","數字 13–17");
+ty("D","Comment dit-on 12 en français ?","douze","12 = douze.","12＝douze");
+mc("D","Quel jour vient après lundi ?",["mardi","mercredi","dimanche","jeudi"],"lundi, mardi, mercredi, jeudi…","星期一之後是星期二");
+mc("D","Comment dit-on « birthday » ?",["un anniversaire","une fête","un emploi du temps","une année"],"Un anniversaire = birthday; une fête = party.","生日＝anniversaire");
+od("D","I celebrated my birthday.","J'ai fêté mon anniversaire","Passé composé: j'ai + fêté.","複合過去式 j'ai fêté");
+tf("D","En français, les jours et les mois prennent une majuscule : Lundi, Octobre.",false,"Days and months are lowercase: lundi, octobre.","星期、月份小寫");
+mc("D","« Mon emploi du temps » veut dire :",["my timetable","my free time","my job","my birthday"],"Emploi du temps = schedule / timetable.","課表、時間表");
+ls("D","Bonsoir, madame !",["Bonsoir, madame !","Bonjour, madame !","Bonne nuit, madame !","Au revoir, madame !"],"Bonsoir = good evening.","晚安（晚上問候）");
+ty("D","Je vais faire mon ___. (I'll do my best)","mieux","Faire de son mieux: je vais faire mon mieux.","盡力 faire mon mieux");
+Q.forEach((q,i)=>q.id=i);
+const SH=['<svg viewBox="0 0 30 30"><polygon points="15,2 28,27 2,27" fill="#fff"/></svg>','<svg viewBox="0 0 30 30"><polygon points="15,1 29,15 15,29 1,15" fill="#fff"/></svg>','<svg viewBox="0 0 30 30"><circle cx="15" cy="15" r="13" fill="#fff"/></svg>','<svg viewBox="0 0 30 30"><rect x="3" y="3" width="24" height="24" fill="#fff"/></svg>'];
+const TYPES={mc:"🟦 Choix multiple",tf:"✅ Vrai ou faux",type:"⌨️ Écris la réponse",order:"🧩 Remets dans l'ordre",match:"🔗 Associe les paires",listen:"🎧 Écoute"};
+const $=s=>document.querySelector(s),el=(t,c,txt)=>{const e=document.createElement(t);if(c)e.className=c;if(txt!=null)e.textContent=txt;return e};
+const LS={get(k,d){try{const v=localStorage.getItem('fq100_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('fq100_'+k,JSON.stringify(v))}catch(e){}}};
+let topic='ALL',mode,list,idx,score,streak,bestStreak,lives,log,tmr,tLeft,t0,locked,lastSet,curQ;
+let muted=LS.get('mute',false),ac;
+// ---- sound
+function beep(f,d,type='sine',when=0){if(muted)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=f;o.connect(g);g.connect(ac.destination);const t=ac.currentTime+when;g.gain.setValueAtTime(.16,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.start(t);o.stop(t+d)}catch(e){}}
+const sGood=()=>{beep(660,.12,'triangle');beep(880,.12,'triangle',.1);beep(1320,.2,'triangle',.2)},sBad=()=>{beep(220,.25,'sawtooth');beep(160,.35,'sawtooth',.2)},sTick=()=>beep(1000,.04,'square'),sTap=()=>beep(520,.05,'triangle'),sWin=()=>[523,659,784,1047].forEach((f,i)=>beep(f,.25,'triangle',i*.12));
+function setMute(){document.querySelectorAll('.mute').forEach(b=>b.textContent=muted?'🔇':'🔊')}
+document.querySelectorAll('.mute').forEach(b=>b.onclick=()=>{muted=!muted;LS.set('mute',muted);setMute();if(muted&&window.speechSynthesis)speechSynthesis.cancel()});setMute();
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2600)}
+// ---- speech
+let frVoice=null,warned=false;
+function pickVoice(){if(!window.speechSynthesis)return;const v=speechSynthesis.getVoices();frVoice=v.find(x=>/^fr[-_]FR/i.test(x.lang))||v.find(x=>/^fr/i.test(x.lang))||null}
+if(window.speechSynthesis){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+function speak(txt,rate=.9){if(muted){toast('🔇 Sound is off — tap 🔊 to hear');return false}
+ if(!window.speechSynthesis){toast('Speech not supported on this browser · 此瀏覽器不支援語音');return false}
+ txt=txt.replace(/_+/g,' … ').replace(/\(.*?\)/g,'');speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);u.lang='fr-FR';u.rate=rate;if(frVoice)u.voice=frVoice;
+ else if(!warned){warned=true;toast('No French voice found — using default voice. iPhone: Settings › Accessibility › Spoken Content › Voices › French');}
+ speechSynthesis.speak(u);return true}
+document.addEventListener('click',e=>{const f=e.target.closest('.fr');if(f)speak(f.textContent.replace(/→/g,','))});
+// ---- confetti
+const cv=$('#conf'),cx=cv.getContext('2d');let parts=[],raf=0;
+function confetti(n=120){cv.width=innerWidth;cv.height=innerHeight;for(let i=0;i<n;i++)parts.push({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,vx:(Math.random()-.5)*4,vy:2+Math.random()*4,r:Math.random()*6.28,s:6+Math.random()*7,c:['#ffd400','#e21b3c','#1368ce','#26890c','#fff','#ff7ad9'][i%6]});if(!raf)loop()}
+function loop(){cx.clearRect(0,0,cv.width,cv.height);parts=parts.filter(p=>p.y<cv.height+20);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.05;p.r+=.1;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cx.restore()});raf=parts.length?requestAnimationFrame(loop):(cx.clearRect(0,0,cv.width,cv.height),0)}
+function combo(txt){const d=el('div','combo',txt);document.body.appendChild(d);setTimeout(()=>d.remove(),1300)}
+// ---- helpers
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[’`´]/g,"'").replace(/œ/g,'oe').replace(/[.!?,;:]/g,'').replace(/\s+/g,' ').trim();
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));scrollTo(0,0)}
+const pool=()=>topic==='ALL'?Q:Q.filter(q=>q.k===topic);
+// ---- menu
+function renderMenu(){const tp=$('#topics');tp.innerHTML='';const best=LS.get('best',{}),mast=LS.get('mastered',[]);
+ [['ALL',['🌟','All 100','全部 100 題']],...Object.entries(CATS)].forEach(([k,v])=>{const n=k==='ALL'?100:Q.filter(q=>q.k===k).length,m=(k==='ALL'?Q:Q.filter(q=>q.k===k)).filter(q=>mast.includes(q.id)).length;
+  const b=el('button','chip'+(k===topic?' sel':''));b.innerHTML=`${v[0]} <span></span><small></small>`;b.querySelector('span').textContent=v[1];b.querySelector('small').textContent=`${v[2]} · ${n} Q · ⭐${m}/${n}${best[k]?' · 🏆'+best[k]:''}`;b.dataset.k=k;b.onclick=()=>{topic=k;sTap();renderMenu()};tp.appendChild(b)});
+ const mis=LS.get('mistakes',[]);$('#mcount').textContent=`(${mis.length})`;$('#goR').disabled=!mis.length;$('#goR').style.opacity=mis.length?1:.5;
+ $('#mast').textContent=`⭐ ${mast.length}/100 mastered`;
+ const b=best[topic];$('#bestBox').innerHTML=b?`🏆 Best score in this topic: <b>${b}</b>`:'🏆 No best score yet in this topic — 加油！';}
+// ---- game
+function start(m,set){mode=m;let base=set||pool();lastSet=base;list=shuf(base);if(m==='q')list=list.slice(0,10);
+ idx=score=streak=bestStreak=0;lives=3;log=[];$('#lives').style.display=m==='s'?'inline':'none';$('#timer').style.display=(m==='p'||m==='r')?'none':'flex';show('quiz');ask()}
+const limitFor=q=>({mc:20,tf:15,listen:20,type:30,order:30,match:40})[q.t];
+function ask(){locked=false;const q=curQ=list[idx];$('#qn').textContent=`${idx+1}/${list.length}`;$('#prog').style.width=(idx/list.length*100)+'%';$('#pts').textContent=score;$('#lives').textContent='❤️'.repeat(lives)+'🖤'.repeat(3-lives);
+ $('#tag').textContent=`${TYPES[q.t]} · ${CATS[q.k][0]} ${CATS[q.k][1]}`;$('#qtext').textContent=q.q;$('#sayQ').style.display=(q.t==='order'||q.t==='listen'||q.t==='match')?'none':'block';
+ $('#fb').className='fb';$('#next').style.display='none';const A=$('#area');A.innerHTML='';
+ if(q.t==='mc'||q.t==='tf'||q.t==='listen'){
+  if(q.t==='listen'){const p=el('button','play','🔊');p.id='playBtn';p.onclick=()=>{if(!speak(q.say,.85))reveal()};A.appendChild(p);
+   const sl=el('button','btn g','🐢 Slower · 慢速');sl.style.cssText='width:auto;padding:8px 14px;font-size:.9rem;display:block;margin:0 auto';sl.onclick=()=>speak(q.say,.6);A.appendChild(sl);
+   const rv=el('div','tag','');rv.id='revealBox';A.appendChild(rv);
+   if(!window.speechSynthesis)reveal();else setTimeout(()=>{if(curQ===q&&!muted)speak(q.say,.85)},350)}
+  const opts=q.t==='tf'?q.c:shuf(q.c),g=el('div','grid'+(q.t!=='tf'&&opts.some(c=>c.length>14)?' long':''));
+  opts.forEach((c,i)=>{const b=el('button','t '+(q.t==='tf'?(i?'tff':'tfv'):'t'+i));b.innerHTML=(q.t==='tf'?(i?'✗ ':'✓ '):SH[i])+'<span></span>';b.lastChild.textContent=c;b.dataset.v=c;b.onclick=()=>{const ok=c===q.ans;document.querySelectorAll('#area .t').forEach(x=>{x.disabled=true;x.classList.add(x.dataset.v===q.ans?'right':x===b?'wrong':'dim')});answer(ok,c)};g.appendChild(b)});A.appendChild(g)}
+ else if(q.t==='type'){const i=el('input','inp');i.id='inp';i.setAttribute('autocomplete','off');i.setAttribute('autocapitalize','off');i.setAttribute('autocorrect','off');i.spellcheck=false;i.placeholder='Tape ta réponse…';A.appendChild(i);
+  const acc=el('div','acc');['é','è','ê','à','ç','ï',"'"].forEach(ch=>{const b=el('button','',ch);b.onclick=()=>{i.value+=ch;i.focus()};acc.appendChild(b)});A.appendChild(acc);
+  const r=el('div','row2');const h=el('button','btn g','💡 Hint');h.onclick=()=>{const a=q.ans;h.textContent='💡 '+a[0]+'…'.padEnd(Math.max(1,a.length-1),'·');h.disabled=true;q._hint=1};const go=el('button','btn c','Vérifier ✓');go.id='check';
+  go.onclick=()=>{if(locked)return;const v=i.value;if(!v.trim()){toast('Écris une réponse · 請輸入答案');return}const ok=q.a.some(a=>norm(a)===norm(v));i.classList.add(ok?'ok':'no');i.disabled=true;answer(ok,v)};
+  i.onkeydown=e=>{if(e.key==='Enter')go.onclick()};r.append(h,go);A.appendChild(r);setTimeout(()=>i.focus({preventScroll:true}),50)}
+ else if(q.t==='order'){const line=el('div','line'),bank=el('div','bank');line.id='line';bank.id='bank';const chosen=[];
+  const redraw=()=>{line.innerHTML='';if(!chosen.length)line.appendChild(el('span','', 'Tap the words · 依序點選單字')).style.opacity=.7;chosen.forEach((c,j)=>{const w=el('button','w',c.t);w.onclick=()=>{if(locked)return;sTap();c.b.classList.remove('used');chosen.splice(j,1);redraw()};line.appendChild(w)})};
+  shuf(q.w.map((t,j)=>({t,j}))).forEach(o=>{const b=el('button','w',o.t);b.onclick=()=>{if(locked||b.classList.contains('used'))return;sTap();speak(o.t,1);b.classList.add('used');chosen.push({t:o.t,b});redraw()};bank.appendChild(b)});
+  redraw();const go=el('button','btn c','Vérifier ✓');go.id='check';go.onclick=()=>{if(locked)return;if(chosen.length<q.w.length){toast('Use all the words · 請用完所有單字');return}const s=chosen.map(c=>c.t).join(' ');answer(s===q.ans,s)};A.append(line,bank,go)}
+ else if(q.t==='match'){const g=el('div','mgrid'),L=el('div','mcol'),R=el('div','mcol');let sel=null,done=0,errs=0;
+  const pick=(b,side)=>{if(locked||b.classList.contains('done'))return;
+   if(side==='L'){if(b.classList.contains('fr'))0;document.querySelectorAll('.m.L').forEach(x=>x.classList.remove('sel'));sel=b;b.classList.add('sel');speak(b.textContent,1);return}
+   if(!sel){toast('Tap a French word first · 先點左邊法文');return}
+   if(sel.dataset.i===b.dataset.i){[sel,b].forEach(x=>{x.classList.remove('sel');x.classList.add('done')});sel=null;done++;sGood();if(done===q.pairs.length)answer(errs===0,errs?errs+' erreur(s)':'parfait')}
+   else{errs++;sBad();[sel,b].forEach(x=>{x.classList.add('bad');setTimeout(()=>x.classList.remove('bad'),400)})}};
+  q.pairs.forEach((p,i)=>{const b=el('button','m L',p[0]);b.dataset.i=i;b.onclick=()=>pick(b,'L');L.appendChild(b)});
+  shuf(q.pairs.map((p,i)=>[p[1],i])).forEach(([t,i])=>{const b=el('button','m R',t);b.dataset.i=i;b.onclick=()=>pick(b,'R');R.appendChild(b)});
+  g.append(L,R);A.appendChild(g);A.appendChild(el('div','tag','Tap left, then its partner on the right · 左右配對（全對才得分）')).style.marginTop='8px'}
+ if(mode!=='p'&&mode!=='r'){const lim=limitFor(q);tLeft=lim;t0=performance.now();upd();clearInterval(tmr);tmr=setInterval(()=>{tLeft--;upd();if(tLeft<=5&&tLeft>0)sTick();if(tLeft<=0)timeUp()},1000)}}
+function reveal(){const r=$('#revealBox');if(r)r.textContent='(No audio — read it: « '+curQ.say+' »)'}
+function upd(){const t=$('#timer');t.textContent=tLeft;t.classList.toggle('low',tLeft<=5)}
+function timeUp(){if(locked)return;document.querySelectorAll('#area button,#area input').forEach(b=>{b.disabled=true;if(b.dataset&&b.dataset.v===curQ.ans)b.classList.add('right')});answer(false,null)}
+function answer(ok,given){if(locked)return;locked=true;clearInterval(tmr);const q=curQ;let gain=0;
+ const mast=new Set(LS.get('mastered',[])),mis=new Set(LS.get('mistakes',[]));
+ if(ok){streak++;bestStreak=Math.max(bestStreak,streak);if(mode!=='p'&&mode!=='r'){const lim=limitFor(q),e=(performance.now()-t0)/1000;gain=Math.round(500+500*Math.max(0,1-e/lim))+Math.min(streak-1,5)*100;if(q._hint)gain=Math.round(gain/2)}else gain=100;score+=gain;sGood();mast.add(q.id);mis.delete(q.id);
+  if(streak>0&&streak%5===0){confetti(90);combo('🔥 '+streak+' d’affilée !')}else if(streak>=3)combo('🔥 x'+streak)}
+ else{streak=0;sBad();mis.add(q.id);mast.delete(q.id);if(mode==='s'){lives--;$('#lives').textContent='❤️'.repeat(lives)+'🖤'.repeat(3-lives)}if(navigator.vibrate)navigator.vibrate(120)}
+ LS.set('mastered',[...mast]);LS.set('mistakes',[...mis]);log.push({q,ok,given});
+ const s=$('#streak');s.textContent='🔥 '+streak;s.classList.remove('streak');void s.offsetWidth;if(ok)s.classList.add('streak');$('#pts').textContent=score;
+ const fb=$('#fb');fb.className='fb on '+(ok?'ok':'no');fb.innerHTML=`<b>${ok?'✓ Correct !':(given===null?'⏰ Temps écoulé !':'✗ Raté')}</b>${ok&&gain?` +${gain}`:''}<div>Réponse : <b class="ans fr"></b></div><div class="en"></div><div class="zh"></div>`;
+ fb.querySelector('.ans').textContent=q.t==='listen'?q.say:q.ans;fb.querySelector('.en').textContent='💬 '+q.en;fb.querySelector('.zh').textContent='🀄 '+q.zh;
+ if(q.t==='type'&&ok&&norm(given)===norm(q.ans)&&given.trim()!==q.ans){fb.querySelector('.en').textContent='✍️ Accented spelling: '+q.ans+' · '+q.en}
+ const end=idx+1>=list.length||(mode==='s'&&lives<=0);$('#next').style.display='block';$('#next').textContent=end?(mode==='s'&&lives<=0?'💀 Game over → Résultats':'Résultats 🏁'):'Suivant →';$('#next').scrollIntoView({block:'nearest',behavior:'smooth'})}
+$('#next').onclick=()=>{if(window.speechSynthesis)speechSynthesis.cancel();idx++;if(idx<list.length&&!(mode==='s'&&lives<=0))ask();else results()};
+$('#sayQ').onclick=()=>speak(curQ.q);
+function results(){$('#prog').style.width='100%';const n=log.length,cr=log.filter(l=>l.ok).length,acc=n?Math.round(cr/n*100):0;
+ const best=LS.get('best',{}),key=mode==='r'?null:topic;if(key&&score>(best[key]||0)){best[key]=score;LS.set('best',best)}
+ $('#rTitle').textContent=mode==='s'&&lives<=0?'Game over 💀':acc===100?'Parfait ! 🎉':acc>=70?'Bravo ! 👏':'Continue ! 💪';$('#rScore').textContent=score+' pts';
+ $('#rAcc').textContent=`${acc}% (${cr}/${n})`;$('#rStreak').textContent=bestStreak;$('#rBest').textContent=key?best[key]||0:'—';
+ const L=$('#rList');L.innerHTML='';[...log.filter(l=>!l.ok),...log.filter(l=>l.ok)].forEach(l=>{const d=el('div','rev '+(l.ok?'v':'x'));d.appendChild(el('div','',(l.ok?'✓ ':'✗ ')+(l.q.t==='listen'?'🎧 '+l.q.say:l.q.q)));const a=el('div','a fr',l.q.t==='listen'?l.q.say:l.q.ans);d.appendChild(a);if(!l.ok&&l.given)d.appendChild(el('div','','Ta réponse : '+l.given));d.appendChild(el('div','',l.q.en+' / '+l.q.zh));L.appendChild(d)});
+ $('#retry').style.display=log.some(l=>!l.ok)?'block':'none';show('results');if(acc>=80&&n>=5){confetti(180);sWin()}else if(acc>=70)sGood()}
+$('#goK').onclick=()=>start('k');$('#goP').onclick=()=>start('p');$('#goQ').onclick=()=>start('q');$('#goS').onclick=()=>start('s');
+$('#goR').onclick=()=>{const m=LS.get('mistakes',[]);if(m.length)start('r',Q.filter(q=>m.includes(q.id)))};
+$('#goC').onclick=()=>show('cheat');$('#backC').onclick=()=>show('start');
+$('#retry').onclick=()=>start(mode==='q'?'k':mode,log.filter(l=>!l.ok).map(l=>l.q));$('#again').onclick=()=>start(mode,mode==='r'?Q.filter(q=>LS.get('mistakes',[]).includes(q.id)):lastSet);
+$('#home').onclick=()=>{renderMenu();show('start')};
+$('#quit').onclick=()=>{clearInterval(tmr);if(window.speechSynthesis)speechSynthesis.cancel();renderMenu();show('start')};
+$('#reset').onclick=()=>{if(confirm('Reset all progress? 確定重設？')){['best','mastered','mistakes'].forEach(k=>localStorage.removeItem('fq100_'+k));renderMenu()}};
+renderMenu();
+</script></body></html>
