@@ -48,7 +48,13 @@ main{max-width:1120px;margin:0 auto;padding:var(--s4) var(--s3) var(--s6);outlin
 .hero p.lead{font-size:1.15rem;color:var(--muted);max-width:52ch;margin:var(--s3) 0 var(--s4)}
 .hero .ctas{display:flex;flex-wrap:wrap;gap:12px}
 .hero-art{position:relative;border-radius:28px;overflow:hidden;box-shadow:var(--sh-h);aspect-ratio:4/3;background:var(--surface2)}
-.hero-art img{width:100%;height:100%;object-fit:cover;animation:float 6s ease-in-out infinite}
+.hero-art{margin:0}.hero-art img{width:100%;height:100%;object-fit:cover}
+.bubble{position:absolute;background:#fff;color:#1d2433;font-weight:800;font-size:clamp(.8rem,2.2vw,1.05rem);line-height:1.25;padding:.5em .6em .5em .9em;border-radius:16px;box-shadow:0 6px 18px rgba(20,30,60,.18);display:flex;align-items:center;gap:4px;animation:pop .5s cubic-bezier(.3,1.5,.5,1) both}
+.bubble::after{content:"";position:absolute;bottom:-12px;width:0;height:0;border:12px solid transparent;border-top-color:#fff;border-bottom:0}
+.bubble .say{width:28px;height:28px;font-size:.8rem;margin:0}
+.b-left{left:4%;top:6%;max-width:46%}.b-left::after{left:42%}
+.b-right{right:6%;top:27%;animation-delay:.6s}.b-right::after{left:38%}
+@keyframes pop{from{opacity:0;transform:scale(.6) translateY(10px)}}
 @keyframes float{50%{transform:scale(1.03)}}
 .flag{display:inline-flex;height:.9em;width:1.4em;vertical-align:-.05em;border-radius:3px;overflow:hidden;margin-left:6px}.flag i{flex:1}.flag i:nth-child(1){background:#2b59c3}.flag i:nth-child(2){background:#fff}.flag i:nth-child(3){background:#ef4135}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:var(--s4)}
