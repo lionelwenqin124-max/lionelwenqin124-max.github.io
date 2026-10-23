@@ -142,3 +142,4 @@ table.sym{border-collapse:collapse;width:100%}table.sym td,table.sym th{border-b
 #toast.show{opacity:1}
 .review li{margin-bottom:var(--s2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+.lbl .n{margin-right:4px;opacity:.75;font-weight:800}
