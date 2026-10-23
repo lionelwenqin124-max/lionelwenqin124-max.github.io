@@ -50,7 +50,7 @@ function part(id){
  <ol class="path">${L.map(l=>{const v=pct(l);return `<li><a class="card" href="#/lesson/${l.id}" style="--c:${l.color}"><span class="node" aria-hidden="true">${l.emoji}</span><span style="flex:1;min-width:0"><span class="badge ${v>=100?'done':''}">Leçon ${l.id} ${lp(l.id).done?'· ✓':''}</span><h3>${esc(l.short)} <small style="color:var(--muted);font-weight:500">· ${l.zh}</small></h3><p>${esc(l.title)}</p><span class="bar" style="display:block"><i style="width:${v}%"></i></span></span></a></li>`}).join('')}</ol>`}
 function lesson(id,tab){
  const l=L.find(x=>x.id==id);if(!l)return part(1);tab=tab||'learn';
- const t=[['learn','📖 Leçon'],['vocab','🃏 Vocabulaire'],['notes','✍️ Mes notes'],['ex','🎯 Exercices']];
+ const t=[['learn','📖 Leçon'],['vocab','🃏 Vocabulaire'],['video','🎬 Vidéo'],['notes','✍️ Mes notes'],['ex','🎯 Exercices']];
  return `<div style="--c:${l.color}"><div class="crumbs"><a href="#/">Accueil</a> › <a href="#/part/1">Part 1</a> › Leçon ${l.id}</div>
  <header class="lesson-head"><span class="eyebrow">Leçon ${l.id} · ${esc(l.short)}</span><h1>${esc(l.title)} <button class="say say-inline" data-say="${esc(l.title)}" aria-label="Listen">🔊</button></h1><p>🎯 ${esc(l.goal)} · ${l.zh}</p></header>
  <div class="tabs" role="tablist">${t.map(([k,n])=>`<button role="tab" aria-selected="${k===tab}" data-tab="${k}">${n}</button>`).join('')}</div>
@@ -63,6 +63,7 @@ function renderPanel(l,tab){
  if(tab==='vocab')el.innerHTML=vocabGrid(l.vocab,l.id)+`<div class="actions"><button class="btn btn-primary" data-go="ex">Exercices →</button></div>`;
  if(tab==='notes')el.innerHTML=`<p class="lead" style="color:var(--muted)">Your handwritten notes from class, checked by a French teacher's eye 🧐 · 課堂筆記檢查</p>`+l.notes.map(([o,c])=>`<div class="note"><span class="orig">“${esc(o)}”</span><span>${c}</span></div>`).join('');
  if(tab==='ex')quiz(el,l);
+ if(tab==='video')videoPanel(el,l);
  el.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{location.hash=`#/lesson/${l.id}/${b.dataset.go}`});
  bindFlips(el);
 }
@@ -75,6 +76,28 @@ function bindFlips(el){el.querySelectorAll('.flip').forEach(f=>{const go=()=>{f.
  const fa=$('#flipAll',el);if(fa)fa.onclick=()=>el.querySelectorAll('.flip').forEach(f=>f.click());
  const pa=$('#playAll',el);if(pa)pa.onclick=()=>{speechSynthesis.cancel();el.querySelectorAll('.front .say').forEach(b=>{const u=new SpeechSynthesisUtterance(b.dataset.say.replace(/\s\/\s/g,', '));u.lang='fr-FR';u.rate=+store.get('rate',0.9);if(voice)u.voice=voice;speechSynthesis.speak(u)})};
  const r=$('#rate',el);if(r)r.oninput=()=>store.set('rate',r.value)}
+/* --- review video --- */
+const vcache={};
+async function loadVid(n){if(vcache[n])return vcache[n];const r=await fetch('videos/l'+n+'.b64?v='+(window.ASSET_V||''));if(!r.ok)throw new Error(r.status);const t=(await r.text()).trim();const bin=atob(t);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return vcache[n]=URL.createObjectURL(new Blob([u],{type:'video/mp4'}))}
+function videoPanel(el,l){const V=(window.VIDEOS||{})[l.id];if(!V){el.innerHTML='<p>Bientôt.</p>';return}
+ el.innerHTML=`<div class="vid-wrap"><div class="vid-box"><video id="vid" playsinline controls preload="auto" aria-label="${esc(V.title)}"></video><div class="vid-load" id="vload">⏳ Chargement de la vidéo…</div>
+  <div class="vcap" id="vcap" aria-hidden="true"></div></div>
+  <div class="vid-bar"><div><b>${esc(V.title)}</b><br><small>🎬 ${esc(V.scene)}</small></div><div class="vid-ctl"><button class="btn btn-ghost" id="cc" aria-pressed="true">CC</button><button class="btn btn-ghost" id="spd">1×</button></div></div>
+  <h3 style="margin-top:24px">📝 Transcription · Transcript · 逐字稿</h3>
+  <ol class="tline">${V.lines.map((x,i)=>`<li data-i="${i}"><button class="ts" data-t="${x[0]}" aria-label="Play from ${x[0]} seconds">▶ ${x[0].toFixed(0)}s</button><div class="tl"><span class="spk">${esc(x[2])}</span><span class="tfr" lang="fr">${esc(x[3])}</span><span class="ten" lang="en">${esc(x[4])}</span><span class="tzh" lang="zh-Hant">${esc(x[5])}</span></div><button class="say" data-say="${esc(x[3])}" aria-label="Listen slowly">🔊</button></li>`).join('')}</ol>
+  <div class="note"><span>💡 ${esc(V.tip)}</span></div>
+  <h3 style="margin-top:24px">❓ Compréhension</h3><div id="vq"></div></div>`;
+ const v=$('#vid',el),cap=$('#vcap',el),items=[...el.querySelectorAll('.tline li')];let cc=true;
+ loadVid(l.id).then(u=>{v.src=u;$('#vload',el).remove()}).catch(e=>{$('#vload',el).textContent='⚠️ Video failed to load ('+e.message+')'});
+ v.ontimeupdate=()=>{const t=v.currentTime;let k=V.lines.findIndex(x=>t>=x[0]&&t<x[1]);items.forEach((li,i)=>li.classList.toggle('on',i===k));
+  cap.innerHTML=cc&&k>=0?`<span lang="fr">${esc(V.lines[k][3])}</span><small>${esc(V.lines[k][4])}<br>${esc(V.lines[k][5])}</small>`:'';cap.style.display=cap.innerHTML?'block':'none'};
+ el.querySelectorAll('.ts').forEach(b=>b.onclick=()=>{v.currentTime=+b.dataset.t+0.01;v.play()});
+ $('#cc',el).onclick=e=>{cc=!cc;e.currentTarget.setAttribute('aria-pressed',cc);e.currentTarget.style.opacity=cc?1:.5;v.ontimeupdate()};
+ $('#spd',el).onclick=e=>{v.playbackRate=v.playbackRate===1?0.75:1;e.currentTarget.textContent=(v.playbackRate===1?'1':'0.75')+'×'};
+ $('#vq',el).innerHTML=V.qs.map((q,i)=>`<div class="qcard" style="margin-bottom:12px"><div class="q">${i+1}. ${esc(q.q)}</div><div class="opts">${q.o.map((o,k)=>`<button class="opt" data-q="${i}" data-k="${k}">${esc(o)}</button>`).join('')}</div></div>`).join('');
+ el.querySelectorAll('#vq .opt').forEach(b=>b.onclick=()=>{const q=V.qs[b.dataset.q],box=b.parentElement;if(box.dataset.done)return;box.dataset.done=1;const ok=+b.dataset.k===q.a;
+  box.querySelectorAll('.opt').forEach(x=>{if(+x.dataset.k===q.a)x.classList.add('right');else if(x===b)x.classList.add('wrong')});if(ok){addXP(5);toast('🎉 +5 XP')}});
+}
 /* --- answer checking --- */
 const norm=s=>s.toLowerCase().replace(/[’`]/g,"'").replace(/\s+/g,' ').replace(/\s*([?!.,])\s*$/,'').trim();
 const strip=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
