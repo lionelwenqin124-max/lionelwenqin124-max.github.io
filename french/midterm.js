@@ -5,7 +5,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const norm=s=>String(s).toLowerCase().replace(/[’`]/g,"'").replace(/\s+/g,' ').replace(/\s*([?!.,])\s*$/,'').trim();
 const strip=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 const H=()=>window.LFR||{};
-const say=t=>{const h=H();if(h.speak)h.speak(t);else if('speechSynthesis' in window){const u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';speechSynthesis.cancel();speechSynthesis.speak(u)}};
+const say=t=>{setTimeout(()=>{try{const h=H();if(h.speak)h.speak(t);else if('speechSynthesis' in window){const u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';speechSynthesis.cancel();speechSynthesis.speak(u)}}catch(e){console.warn('tts',e)}},0)};
 /* ---------- DATA ---------- */
 const SECS=[
 {id:'I',w:20,emo:'🧩',color:'#2b59c3',fr:'Le verbe « être »',zh:'填入適當的 «être» 動詞變化',en:'Fill in the correct form of être'},
@@ -113,7 +113,7 @@ function bindCards(){document.querySelectorAll('.mt-flip').forEach(f=>{f.onclick
 /* ---------- QUESTION CARD (shared) ---------- */
 function qHTML(x,extra){const s=secOf(x.s);const ph=x.s==='IV'?(x.g==='f'?'Elle est … et …':'Il est … et …'):x.s==='II'?'Je suis … et je suis …':x.s==='V'?'Il est / Elle est':'';
  return `<div class="card qcard mt-q" style="--c:${s.color}"><span class="badge">${s.emo} ${s.id}. ${esc(s.fr)}</span><p class="mt-small">${s.zh}${x.s==='IV'?' · calme, souriant, curieux, rapide, précis, patient, dynamique, gai':''}</p><h2 class="mt-prompt">${esc(x.q)}</h2>${extra||''}
- <form id="mtF" autocomplete="off"><input type="text" id="mtA" class="mt-in lg" placeholder="${ph}" autocapitalize="off" spellcheck="false" aria-label="Answer">${accBar()}<div class="actions"><button class="btn btn-primary">Vérifier ↵</button><button type="button" class="btn btn-ghost" id="mtSkip">🤷 Je ne sais pas</button></div></form><div id="mtFb" class="feedback"></div></div>`}
+ <form id="mtF" autocomplete="off"><input type="text" id="mtA" class="mt-in lg" placeholder="${ph}" autocapitalize="off" spellcheck="false" aria-label="Answer">${accBar()}<div class="actions"><button class="btn btn-primary">Vérifier ↵</button><button type="button" class="btn btn-ghost" id="mtSkip">🤷 Je ne sais pas</button></div></form><div id="mtFb" class="mt-fb"></div></div>`}
 function fbHTML(x,g){return `<div class="mt-fbbox ${g.r===2?'ok':g.r===1?'near':'bad'}"><b>${g.r===2?'✅ Bravo !':g.r===1?'🟡 Presque !':'❌ Pas tout à fait…'}</b> ${g.msg&&g.r!==2?esc(g.msg):''}<p>👉 <b>${esc(x.full)}</b> ${sayBtn(x.full)}</p>${expl(x)}<button class="btn btn-primary" id="mtNext">Suivant →</button></div>`}
 /* ---------- BOSS (spaced repetition until mastered) ---------- */
 function boss(sec){return `${crumbs('Boss battle')}<div class="tabs mt-tabs"><a class="tab ${!sec?'on':''}" href="#/midterm/boss">🌐 All</a>${SECS.map(s=>`<a class="tab ${s.id===sec?'on':''}" href="#/midterm/boss/${s.id}">${s.emo} ${s.id}</a>`).join('')}</div><div id="mtBoss"></div>`}
