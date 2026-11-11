@@ -328,7 +328,7 @@ async function part2(){
  for(let ci=0;ci<C.clues.length;ci++){const cl=C.clues[ci],remain=C.clues.length-ci-1;
   // choose anchor chair: prefer 2 accepted options
   let best=null;shuffle([0,1,2,3,4,5]).forEach(c=>{if(!free[c])return;const acc=solveAccept(free,c,remain);if(acc.length&&(!best||acc.length>best.acc.length))best={c,acc};});
-  if(ci===0)best={c:1,acc:[0,2]};
+  if(!best){const c=free.findIndex(Boolean);best={c,acc:[c+1].filter(n=>n<6&&free[n])};}
   free[best.c]=false;const an=seatPerson(cl.anchor,best.c,clip);seats[cl.anchor]=best.c;
   await flyTo(an,SEATX[best.c],565,500);hop(an,2);an.classList.add('glow');
   const els=layoutTray(movers,150,1130,690,140);els.forEach(e=>e.querySelector('.label').textContent=P[e.dataset.item].en);
