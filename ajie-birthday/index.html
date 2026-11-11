@@ -347,7 +347,7 @@ async function part2(){
  await partDone(2,'大家都坐好了！');
 }
 async function part3(){
- setBg('bg_dining');title('Part 3','I want… 我想要… 🥛');
+ setBg('bg_dining');title('Part 3','Who wants it? 誰想要？ 🥛');
  const seats=G.seats||{mom:0,dad:1,grandma:2,brother:3,grandpa:4,sister:5};
  const clip=mkClip();chairs(clip);const who={};for(const p in seats)who[p]=seatPerson(p,seats[p],clip);
  const cnt={};trayPanel(170,1130);
@@ -358,7 +358,7 @@ async function part3(){
  for(const [p,item] of rounds){
   const tgt=p==='jay'?jay:who[p];const pool=I[item]&&C.foods.includes(item)||item==='cake'?C.foods:C.utensils;
   hop(tgt,2);tgt.classList.add('glow');const els=layoutTray(choices(item,pool),170,1130);
-  line(`I want ${I[item].a}!`,`我想要${I[item].zha}！`,{pitch:pitch[p]});
+  {const nm=P[p].en;line(`${nm[0].toUpperCase()+nm.slice(1)} wants ${I[item].a}.`,`${P[p].zh}想要${I[item].zha}。`,{pitch:pitch[p]});}
   const targets=Object.values(who).concat([jay]);
   const {it}=await round({items:els,targets,ok:(i,t)=>i.dataset.item===item&&t.dataset.t===p,
    expect:{item:`[data-item="${item}"]`,target:`[data-t="${p}"]`},onPick:sayWord,
