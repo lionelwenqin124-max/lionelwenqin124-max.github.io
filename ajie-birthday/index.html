@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes"><link rel="icon" href="data:,"><title>Jay's Birthday Party 🎂</title>
 <style>*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-html,body{margin:0;height:100%;overflow:hidden;background:#ffe6f0;touch-action:none;overscroll-behavior:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#ffe6f0;touch-action:pinch-zoom;overscroll-behavior:none}
 body{font-family:"Chalkboard SE","Comic Sans MS","Arial Rounded MT Bold","Nunito","PingFang TC","Microsoft JhengHei",sans-serif}
 #stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:center center;overflow:hidden;border-radius:18px;background:#fff8e7}
 #bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity .5s}
@@ -573,8 +573,8 @@ $('#goHard').addEventListener('pointerup',()=>startGame(true));
 $('#menuBtn').addEventListener('pointerup',e=>{e.stopPropagation();$('#menu').classList.add('show');});
 document.querySelectorAll('#menu button').forEach(b=>b.addEventListener('pointerup',e=>{e.stopPropagation();$('#menu').classList.remove('show');const p=b.dataset.p;if(p!=='x'){ac();$('#start').classList.remove('show');$('#hardBadge').classList.toggle('show',!!G.hard);goPart(+p);}}));
 $('#again').addEventListener('pointerup',()=>{G.done=[0,0,0,0,0,0];G.seats=null;showStars();$('#hardBadge').classList.toggle('show',!!G.hard);goPart(0);});
-document.addEventListener('gesturestart',e=>e.preventDefault());
-document.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+
+document.addEventListener('touchmove',e=>{if(e.touches.length<2)e.preventDefault();},{passive:false});
 })();
 </script>
 </body></html>
