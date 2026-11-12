@@ -91,6 +91,9 @@ body{font-family:"Chalkboard SE","Comic Sans MS","Arial Rounded MT Bold","Nunito
 #teach.need + #teachHint,#teachHint.show{display:block}
 #sayPrompt{position:absolute;left:50%;bottom:168px;transform:translateX(-50%);background:#fff7cc;border:4px solid #6b3e26;border-radius:24px;padding:8px 28px;font-size:32px;color:#3b2314;display:none;z-index:40;white-space:nowrap;pointer-events:none}
 #sayPrompt.show{display:block;animation:capin .35s cubic-bezier(.2,1.6,.4,1)}
+
+#unzoom{display:none;position:fixed;left:0;top:0;transform-origin:0 0;z-index:9999;margin:12px;padding:14px 22px;font-size:26px;font-weight:700;border:4px solid #fff;border-radius:22px;background:#ff5f8f;color:#fff;box-shadow:0 6px 16px rgba(0,0,0,.25);touch-action:manipulation}
+#unzoom.show{display:block}
 </style></head><body>
 <div id="stage">
  <div id="bg"></div><div id="world"></div>
@@ -276,7 +279,8 @@ function round(o){ // o: items[], targets[], ok(it,tg), hint(miss), tapTo(it)->t
   let done=false,miss=0;G.expect=o.expect||null;G.selected=null;
   const clean=()=>{o.items.forEach(it=>{it.onpointerdown=it.onpointermove=it.onpointerup=it.onpointercancel=null;it.classList.remove('drag','sel','held');});o.targets.forEach(t=>{t.onpointerup=null;t.classList.remove('glow');});G.expect=null;G.selected=null;};
   const tryDrop=(it,tg,at)=>{if(done)return true;if(tg&&o.ok(it,tg)){done=true;clean();G.log.push((it.dataset.item||it.dataset.n)+'>'+(tg.dataset.t||''));res({it,tg});return true;}
-   miss++;sfx.boing();const p=at||{x:it._x,y:it._y-it._h};bubble('Try again! 😊',p.x,p.y-10);say('Try again!',{pitch:1.3}).catch(()=>{});if(o.hint)o.hint(miss);return false;};
+   const now=Date.now();if(now-(G.lastTry||0)<1300)return false;G.lastTry=now;
+   miss++;sfx.boing();const p=at||{x:it._x,y:it._y-it._h};document.querySelectorAll('.bubble.try').forEach(b=>b.remove());const bb=bubble('Try again! 😊',p.x,p.y-10);bb.classList.add('try');say('Try again!',{pitch:1.3}).catch(()=>{});if(o.hint)o.hint(miss);return false;};
   o.items.forEach(it=>{it.classList.add('drag');
    it.onpointerdown=e=>{if(done)return;e.preventDefault();e.stopPropagation();try{it.setPointerCapture(e.pointerId);}catch(_){}
     const p=pt(e),off={x:p.x-it._x,y:p.y-it._y},home={x:it._x,y:it._y};let moved=false;it.classList.add('held');sfx.pop();if(o.onPick)o.onPick(it);
@@ -575,6 +579,14 @@ document.querySelectorAll('#menu button').forEach(b=>b.addEventListener('pointer
 $('#again').addEventListener('pointerup',()=>{G.done=[0,0,0,0,0,0];G.seats=null;showStars();$('#hardBadge').classList.toggle('show',!!G.hard);goPart(0);});
 
 document.addEventListener('touchmove',e=>{if(e.touches.length<2)e.preventDefault();},{passive:false});
+
+/* zoom guard: if Safari got zoomed in, snap back / offer a button */
+(function(){const vv=window.visualViewport;if(!vv)return;const meta=document.querySelector('meta[name=viewport]');const base=meta.content;
+ const btn=document.createElement('button');btn.id='unzoom';btn.textContent='🔍 Zoom out 縮小';document.body.appendChild(btn);
+ const reset=()=>{meta.content=base.replace('maximum-scale=1','maximum-scale=1.0001');setTimeout(()=>{meta.content=base;window.scrollTo(0,0);},60);};
+ btn.addEventListener('click',e=>{e.stopPropagation();reset();});
+ let t=0;const chk=()=>{const z=vv.scale>1.05;btn.classList.toggle('show',z);if(z){btn.style.transform=`translate(${vv.offsetLeft}px,${vv.offsetTop}px) scale(${1/vv.scale})`;clearTimeout(t);t=setTimeout(reset,2500);}};
+ vv.addEventListener('resize',chk);vv.addEventListener('scroll',chk);})();
 })();
 </script>
 </body></html>
