@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img">
+<title>A player kicking a ball toward a goal</title>
+<rect width="400" height="300" fill="#bfe3f7"/>
+<rect y="150" width="400" height="150" fill="#4f9d5b"/>
+<rect y="150" width="400" height="26" fill="#5fae6b"/>
+<rect y="202" width="400" height="30" fill="#5fae6b"/>
+<rect y="262" width="400" height="38" fill="#5fae6b"/>
+<g fill="none" stroke="#d7dde3" stroke-width="1.6">
+<path d="M262 70 H384 M262 90 H384 M262 110 H384 M262 130 H384 M262 150 H384 M262 170 H384 M262 190 H384"/>
+<path d="M282 54 V206 M302 54 V206 M322 54 V206 M342 54 V206 M362 54 V206"/>
+</g>
+<path d="M262 208 V52 H386 V208" fill="none" stroke="#fff" stroke-width="9" stroke-linejoin="round"/>
+<path d="M262 208 V52 H386 V208" fill="none" stroke="#9aa5b1" stroke-width="1.5"/>
+<line x1="0" y1="232" x2="400" y2="232" stroke="#fff" stroke-width="4" opacity=".85"/>
+<g transform="translate(112 196) scale(1.35)" stroke="#c62828" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none">
+<polyline points="-4,-44 -8,-8"/>
+<polyline points="-4,-42 -22,-30 -30,-14"/>
+<polyline points="-4,-42 14,-34 24,-44"/>
+<polyline points="-8,-8 -12,14 -16,38"/>
+<polyline points="-8,-8 12,4 34,14"/>
+<circle cx="-4" cy="-60" r="10" fill="#c62828" stroke="none"/>
+</g><circle cx="196" cy="222" r="15" fill="#fff" stroke="#1d2b3a" stroke-width="2.5"/><polygon points="196,215.25 202.42,219.914 199.968,227.461 192.032,227.461 189.58,219.914" fill="#1d2b3a"/>
+</svg>

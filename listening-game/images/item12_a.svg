@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img">
+<title>A beach</title>
+<rect width="400" height="300" fill="#bfe3f7"/>
+<circle cx="330" cy="58" r="30" fill="#ffd43b"/>
+<path d="M40 60 q12 -14 28 -4 q10 -14 28 -2 q16 -2 16 12 H36 q-4 -4 4 -6z" fill="#fff" opacity=".9"/>
+<rect y="118" width="400" height="92" fill="#2f86c9"/>
+<g fill="none" stroke="#e7f5ff" stroke-width="4" stroke-linecap="round">
+<path d="M20 140 q14 -10 28 0 t28 0 t28 0"/><path d="M170 152 q14 -10 28 0 t28 0 t28 0"/><path d="M290 136 q14 -10 28 0 t28 0"/>
+<path d="M70 172 q14 -10 28 0 t28 0 t28 0"/><path d="M240 180 q14 -10 28 0 t28 0 t28 0"/>
+</g>
+<path d="M0 204 q50 -18 100 0 t100 0 t100 0 t100 0 V300 H0z" fill="#f4dba0"/>
+<path d="M0 196 q50 -18 100 0 t100 0 t100 0 t100 0 V212 q-50 -18 -100 0 t-100 0 t-100 0 t-100 0z" fill="#fff" opacity=".8"/>
+<line x1="150" y1="150" x2="170" y2="274" stroke="#7a5230" stroke-width="6" stroke-linecap="round"/>
+<path d="M62 176 Q138 84 250 150 Q200 140 150 151 Q104 158 62 176z" fill="#e03131"/>
+<path d="M112 128 Q140 112 150 151 Q128 152 104 158z M196 123 Q168 112 150 151 Q178 146 200 142z" fill="#fff"/>
+<rect x="196" y="252" width="110" height="26" rx="5" fill="#1f3b73" transform="rotate(-6 251 265)"/>
+<rect x="196" y="252" width="110" height="8" fill="#ffd43b" transform="rotate(-6 251 265)"/>
+<circle cx="330" cy="262" r="17" fill="#fff" stroke="#1d2b3a" stroke-width="2"/>
+<path d="M330 245 A17 17 0 0 1 347 262 L330 262z" fill="#e03131"/><path d="M330 279 A17 17 0 0 1 313 262 L330 262z" fill="#2f86c9"/>
+
+</svg>
