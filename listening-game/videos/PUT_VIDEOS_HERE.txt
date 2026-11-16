@@ -1,0 +1,11 @@
+Put the practice-mode videos in this folder with exactly these names:
+
+item01.mp4  item02.mp4  item03.mp4  item04.mp4  item05.mp4  item06.mp4
+item07.mp4  item08.mp4  item09.mp4  item10.mp4  item11.mp4  item12.mp4
+
+MP4 (H.264), 16:9, 1280x720 or larger, 5 to 8 seconds, no on-screen text.
+Sound is not needed: the game always plays videos muted.
+Optional stills: item01.jpg ... item12.jpg (16:9), shown while a video is missing or loading.
+
+Until a file is here, the game shows a placeholder card for that question.
+See README.md in the site folder for details.
