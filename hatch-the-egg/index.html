@@ -97,6 +97,10 @@ header{position:absolute;inset:0 0 auto;height:84px;background:#fff9ef;border-bo
 .box{background:#fff8e7;padding:40px 45px;border:6px solid #c49b67;border-radius:35px;text-align:center;max-width:780px}
 .box h2{font-weight:bold;font-size:36px;margin:0 0 35px}.box h2 small{font-size:24px;margin-top:15px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* anti-peek: picture layer hidden until cracked; no transitions while resetting */
+#egg img.hid{visibility:hidden!important;opacity:0!important}
+#egg.noanim,#egg.noanim *,#nestWrap:has(#egg.noanim) #nestBed{transition:none!important;animation:none!important}
 </style>
 </head>
 <body>
@@ -309,8 +313,8 @@ function render(){
   $('bA').disabled=!canAward; $('bB').disabled=!canAward; $('bNobody').disabled=!canAward;
   $('bCrack').disabled=!play||S.revealed; $('bReveal').disabled=!play||S.revealed; $('bNext').disabled=!play;
   $('bNext').innerHTML=(S.round>=S.order.length-1)?'Finish 🎉<small>看總分</small>':'Next ▶<small>下一顆蛋</small>';
-  var egg=$('egg'); egg.classList.toggle('hatched',S.revealed); $('nestWrap').classList.toggle('hatched',S.revealed);
-  if(play){ var w=word(); $('word').textContent=w.label; $('wordZh').textContent=w.zh;
+  var egg=$('egg'); $('pic').classList.toggle('hid',!picVisible()); egg.classList.toggle('hatched',S.revealed&&!!S.picReady); $('nestWrap').classList.toggle('hatched',S.revealed&&!!S.picReady);
+  if(play&&S.revealed){ var w=word(); $('word').textContent=w.label; $('wordZh').textContent=w.zh;
     var who=$('who'); who.textContent=S.awarded==='A'?'Team A +1 ✓':S.awarded==='B'?'Team B +1 ✓':''; who.className=S.awarded==='A'?'teamA':S.awarded==='B'?'teamB':''; }
   $('wordCard').classList.toggle('show',play&&S.revealed);
   if(play){ $('prompt').innerHTML=S.revealed?word().say+'<small>答案揭曉 · '+word().zh+'</small>':"What's inside?<small>蛋裡面是什麼？大聲說出英文！</small>"; }
@@ -322,16 +326,32 @@ var autoT=null;
 function stopAuto(){ clearTimeout(autoT); autoT=null; }
 function armAuto(){ stopAuto(); if(S.phase!=='play'||S.revealed||!S.auto||S.step>=STEPS)return; autoT=setTimeout(function(){ crack(); },S.speed*1000); }
 function startGame(){
-  stopAudio(); stopAuto(); var o=S; S=fresh(o); S.order=shuffle(WORDS.map(function(_,i){return i})).slice(0,Math.min(o.n,WORDS.length));
+  stopAudio(); stopAuto(); var o=S; S=fresh(o); resetEgg(); S.order=shuffle(WORDS.map(function(_,i){return i})).slice(0,Math.min(o.n,WORDS.length));
   S.phase='play'; show('start',false); show('final',false); beginRound(true);
 }
 function beginRound(first){
-  stopAuto(); S.step=0; S.awarded=null; S.revealed=false; newShell(); drawShell(0);
-  var w=word(); $('pic').src=U('img/'+w.k+'.jpg'); render();
+  stopAuto(); S.step=0; S.awarded=null; S.revealed=false; resetEgg();
+  var w=word(), tok=++picTok, url=U('img/'+w.k+'.jpg'), im=new Image(); im.src=url;
+  render();
+  var go=function(){ if(tok!==picTok)return; var pic=$('pic'); pic.src=url;  // still hidden
+    var dd=pic.decode?pic.decode():Promise.resolve();
+    dd.catch(function(){}).then(function(){ if(tok!==picTok)return; requestAnimationFrame(function(){ requestAnimationFrame(function(){ if(tok!==picTok)return; S.picReady=true; $('egg').classList.remove('noanim'); render(); }); }); }); };
+  (im.decode?im.decode():Promise.resolve()).then(go,go);
   var keys=(first?['hatch']:[]).concat(S.round===S.order.length-1&&!first?['last']:[]).concat(['inside']);
   playSeq(keys,350).then(function(ok){ if(ok) armAuto(); });
   if(S.muted) armAuto();
 }
+var picTok=0;
+/* Hide the picture BEFORE anything else, snap the egg back to whole with no transitions,
+   and only show the picture layer once the new image is decoded AND the egg has cracked (step>=1). */
+function resetEgg(){
+  picTok++; S.picReady=false;
+  var egg=$('egg'), pic=$('pic');
+  pic.classList.add('hid'); pic.removeAttribute('src');
+  egg.classList.add('noanim'); egg.classList.remove('hatched','wobble'); $('nestWrap').classList.remove('hatched');
+  newShell(); drawShell(0); void egg.offsetWidth;  // commit the whole-egg state without animating
+}
+function picVisible(){ return S.phase==='play'&&!!S.picReady&&(S.step>=1||S.revealed); }
 function wobble(){ var e=$('egg'); e.classList.remove('wobble'); void e.offsetWidth; e.classList.add('wobble'); }
 function crack(){
   if(S.phase!=='play'||S.revealed)return;
@@ -355,7 +375,7 @@ function next(){
   S.round++; beginRound(false);
 }
 function finish(){
-  stopAudio(); stopAuto(); S.phase='final'; render();
+  stopAudio(); stopAuto(); S.phase='final'; resetEgg(); render();
   var a=S.scores[0], b=S.scores[1];
   $('fA').textContent=a; $('fB').textContent=b;
   $('fsA').classList.toggle('winner',a>=b); $('fsB').classList.toggle('winner',b>=a);
@@ -387,11 +407,11 @@ $('bFull').onclick=function(){ try{ if(document.fullscreenElement) document.exit
 document.querySelectorAll('.adj').forEach(function(b){ b.onclick=function(){ var t=+b.dataset.t; S.scores[t]=Math.max(0,S.scores[t]+(+b.dataset.d)); render(); }; });
 $('bRestart').onclick=function(){ show('confirm',true); $('bCancel').focus(); };
 $('bCancel').onclick=function(){ show('confirm',false); };
-$('bYes').onclick=function(){ show('confirm',false); stopAudio(); stopAuto(); var o=S; S=fresh(o); show('final',false); show('start',true); setPrompt("What's inside?<small>蛋裡面是什麼？</small>"); render(); };
+$('bYes').onclick=function(){ show('confirm',false); stopAudio(); stopAuto(); var o=S; S=fresh(o); resetEgg(); show('final',false); show('start',true); setPrompt("What's inside?<small>蛋裡面是什麼？</small>"); render(); };
 document.addEventListener('keydown',function(e){ if(S.phase!=='play'||e.repeat)return; var k=e.key.toLowerCase();
   if(k===' '){e.preventDefault();crack();} else if(k==='a')award('A'); else if(k==='b')award('B'); else if(k==='n')award('none'); else if(k==='r')reveal(); else if(k==='enter'){e.preventDefault();next();} });
 
-selectOpts(); preload(); newShell(); drawShell(0); render();
+selectOpts(); preload(); resetEgg(); render();
 window.__he={get state(){return S}, crack:crack, award:award, next:next, reveal:reveal, clips:CLIPS};
 })();
 </script>
