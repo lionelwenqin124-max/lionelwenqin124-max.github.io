@@ -36,6 +36,7 @@ function home(){
  </div><figure class="hero-art"><img src="hero.webp" alt="Two students meet at a Paris café terrace: Lionel waves and introduces himself, a student at a table replies." width="1000" height="750">
  <figcaption class="bubble b-left"><span lang="fr">Bonjour ! Je m'appelle Lionel.</span><button class="say say-inline" data-say="Bonjour ! Je m'appelle Lionel." aria-label="Listen">🔊</button></figcaption>
  <figcaption class="bubble b-right"><span lang="fr">Enchantée !</span><button class="say say-inline" data-say="Enchantée !" aria-label="Listen">🔊</button></figcaption></figure></section>
+<a class="card mt-promo" href="#/final" style="border-color:#46178f"><div class="emo">🏁</div><div style="flex:1"><span class="badge">期末考 · Final · Part 1</span><h3>Final test — les verbes en -er</h3><p>Mock exam, Kahoot, listening, dictée, boss battle & conjugator. 模擬考＋聽力＋搶答。</p><div class="bar"><i style="width:${window.FINAL?window.FINAL.mastery():0}%"></i></div></div><span class="btn btn-primary">▶ Go</span></a>
 <a class="card mt-promo" href="#/midterm"><div class="emo">🎯</div><div style="flex:1"><span class="badge">期中考 · Midterm</span><h3>Midterm — the exact exam questions</h3><p>Mock paper, flashcards, boss battle, speed round & matching. 模擬考＋遊戲背題。</p><div class="bar"><i style="width:${window.MIDTERM?window.MIDTERM.mastery():0}%"></i></div></div><span class="btn btn-primary">▶ Go</span></a>
  <div class="section-title"><div><h2>Ton parcours</h2><p>Your learning path · 學習路線</p></div></div>
  <div class="grid g4">${C.parts.map(p=>p.status==='open'?`<a class="card" href="#/part/${p.id}" style="--c:var(--primary)"><div class="emo">${p.emoji}</div><span class="badge ${total==100?'done':''}">${total==100?'Terminé ✓':'Ouvert'}</span><h3>${esc(p.title)}</h3><p>${p.zh} · 6 leçons</p><div class="bar" aria-label="Progress ${total}%"><i style="width:${total}%"></i></div></a>`
@@ -159,11 +160,11 @@ function bindReview(){const all=L.flatMap(l=>l.vocab.map((v,i)=>({...v,l:l.id}))
 function route(){const h=location.hash.replace(/^#\/?/,'').split('/');let html,after;
  const v=h[0]||'home';
  if(v==='part'){html=part(h[1]||1)}else if(v==='lesson'){const l=L.find(x=>x.id==h[1]);html=lesson(h[1],h[2]);after=()=>{if(!l)return;const tab=h[2]||'learn';renderPanel(l,tab);document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{location.hash=`#/lesson/${l.id}/${b.dataset.tab}`})}}
- else if(v==='review'){html=review();after=bindReview}else if(v==='midterm'&&window.MIDTERM){const r=window.MIDTERM.route(h);html=r.html;after=r.after}else html=home();
+ else if(v==='review'){html=review();after=bindReview}else if(v==='midterm'&&window.MIDTERM){const r=window.MIDTERM.route(h);html=r.html;after=r.after}else if(v==='final'&&window.FINAL){const r=window.FINAL.route(h);html=r.html;after=r.after}else html=home();
  main.innerHTML=html;after&&after();
  document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===(v==='lesson'?'part':v)));
  if(!(v==='lesson'&&h[2]))window.scrollTo({top:0});else{const t=document.querySelector('.tabs');if(t&&t.getBoundingClientRect().top<0)t.scrollIntoView()}
- document.title=(v==='lesson'?'Leçon '+h[1]+' · ':v==='review'?'Révision · ':v==='midterm'?'Midterm · ':'')+'Le Petit Café du Français';
+ document.title=(v==='lesson'?'Leçon '+h[1]+' · ':v==='review'?'Révision · ':v==='midterm'?'Midterm · ':v==='final'?'Final · ':'')+'Le Petit Café du Français';
 }
 window.LFR={speak:(t)=>speak(t),toast,confetti,addXP};
 window.addEventListener('hashchange',route);hud();route();
