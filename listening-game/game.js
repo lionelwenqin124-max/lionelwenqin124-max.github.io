@@ -371,8 +371,7 @@
       '<button class="mode-card test" id="go-test"><span class="icon" aria-hidden="true">📝</span><span class="txt"><span class="name">測驗模式<span class="en">Test mode</span></span>' +
       '<span class="desc">模擬正式聽力測驗：只播一次、限時作答，最後看成績。<span class="en">Like the real test: plays once, timed, score at the end.</span></span></span><span class="chev" aria-hidden="true">›</span></button>' +
       '<div class="home-tools"><button class="btn ghost small" id="soundcheck">🔊 ' + '試聽音量 <span class="en" style="display:inline">Sound check</span></button></div>' +
-      '<p class="note" id="sc-note" hidden>有聽到音效嗎？沒有的話，請把音量調大。<span class="en">Did you hear the sound? If not, turn the volume up.</span></p>' +
-      '<p class="note">不需登入，也不會收集任何資料。<span class="en">No login. No data is collected.</span></p>'
+      '<p class="note" id="sc-note" hidden>有聽到音效嗎？沒有的話，請把音量調大。<span class="en">Did you hear the sound? If not, turn the volume up.</span></p>'
     );
     $('#go-practice').addEventListener('click', function () { Player.unlock(); primeSfx(); startPractice(); });
     $('#go-test').addEventListener('click', function () { primeSfx(); testBrief(); });
