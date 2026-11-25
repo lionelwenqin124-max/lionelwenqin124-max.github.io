@@ -1,0 +1,137 @@
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#fff;font-family:"Arial Rounded MT Bold","Nunito","Baloo 2","Trebuchet MS",system-ui,sans-serif;touch-action:manipulation;overscroll-behavior:none;position:fixed;inset:0}
+#app{position:absolute;inset:0;overflow:hidden}
+button{font-family:inherit;border:0;cursor:pointer;touch-action:manipulation}
+.hidden{display:none!important}
+.screen{position:absolute;inset:0;overflow:hidden}
+/* top bar */
+#topbar{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;gap:1.2vmin;padding:max(1.4vmin,env(safe-area-inset-top)) max(2vmin,env(safe-area-inset-right)) 0 max(2vmin,env(safe-area-inset-left));z-index:50;pointer-events:none}
+#topbar>*{pointer-events:auto}
+#topbar .spacer{flex:1;pointer-events:none}
+.round{width:11vmin;height:11vmin;max-width:84px;max-height:84px;border-radius:50%;background:#fff;box-shadow:0 .6vmin 0 #1a8fb0,0 1vmin 2vmin rgba(0,0,0,.2);font-size:min(6vmin,44px);display:flex;align-items:center;justify-content:center}
+.round:active{transform:translateY(.5vmin);box-shadow:0 .1vmin 0 #1a8fb0}
+.round.small{width:8vmin;height:8vmin;max-width:60px;max-height:60px;font-size:min(4vmin,28px);font-weight:900;color:#5800F5;opacity:.85}
+#btnZh.on{background:#FFD400}
+#stars{background:#fff;border-radius:99px;padding:1vmin 2.4vmin;font-size:min(5vmin,36px);font-weight:900;color:#f28c00;box-shadow:0 .6vmin 0 #e0a800}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+/* ---------- launch ---------- */
+#launch{background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.wordmark{background:linear-gradient(#3fd3ff,#11a9e8);color:#fff;font-weight:900;border-radius:999px;padding:.12em .7em .18em;font-size:min(13vmin,120px);letter-spacing:.01em;box-shadow:0 .08em 0 #0b7fb5,0 .2em .4em rgba(0,0,0,.15);text-shadow:0 .04em 0 rgba(0,0,0,.15);position:relative;z-index:5;white-space:nowrap}
+.wordmark small{display:block;font-size:.32em;text-align:center;letter-spacing:.12em;margin-top:-.15em}
+.loadwrap{margin-top:6vmin;width:min(60vw,520px);height:4.2vmin;max-height:34px;border-radius:99px;border:.5vmin solid #e8b600;background:#fff6c7;overflow:hidden}
+.loadbar{height:100%;width:0;border-radius:99px;background:repeating-linear-gradient(-45deg,#FFD400 0 14px,#ffb700 14px 28px);background-size:40px 40px;animation:stripes .6s linear infinite}
+@keyframes stripes{to{background-position:40px 0}}
+.loadtxt{margin-top:2.5vmin;color:#a7a9e0;font-size:min(7vmin,54px);font-weight:900}
+#tapStart{margin-top:5vmin;background:#5800F5;color:#fff;font-size:min(9vmin,72px);font-weight:900;border-radius:999px;padding:2vmin 7vmin;box-shadow:0 1.2vmin 0 #3a00a8;animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.swarm{position:absolute;left:50%;top:50%;width:14vmin;height:14vmin;margin:-7vmin 0 0 -7vmin;border-radius:3.4vmin;display:flex;align-items:center;justify-content:center;font-size:8vmin;box-shadow:0 .8vmin 0 rgba(0,0,0,.18);z-index:3}
+.swarm span{font-size:2.2vmin;position:absolute;bottom:.6vmin;color:#fff;font-weight:900;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.mascotPop{position:absolute;left:50%;bottom:4vh;width:34vmin;margin-left:-17vmin;transform:scale(0);z-index:6}
+/* ---------- hub (school yard) ---------- */
+#hub{background:#2ADEFA}
+.cloud{position:absolute;background:#fff;border-radius:99px;opacity:.9}
+.city{position:absolute;bottom:30%;width:12%;background:#7fe6ff;border-radius:2vmin 2vmin 0 0}
+.grass{position:absolute;left:0;right:0;bottom:0;height:32%;background:#82F72D}
+.grass:before{content:"";position:absolute;left:0;right:0;top:-3vmin;height:6vmin;background:radial-gradient(circle at 3vmin 3vmin,#82F72D 3vmin,transparent 3.1vmin) 0 0/6vmin 6vmin repeat-x}
+.school{position:absolute;left:50%;bottom:22%;transform:translateX(-50%);width:min(70vmin,92vw)}
+.playBtn{position:absolute;left:50%;bottom:6%;transform:translateX(-50%);width:22vmin;height:22vmin;border-radius:50%;background:#5800F5;box-shadow:0 1.5vmin 0 #3a00a8,0 0 0 1.4vmin #fff;display:flex;align-items:center;justify-content:center;animation:pulse 1.1s infinite}
+.playBtn:after{content:"";border-left:8vmin solid #fff;border-top:5vmin solid transparent;border-bottom:5vmin solid transparent;margin-left:2vmin}
+.hubMascot{position:absolute;left:4%;bottom:6%;width:24vmin}
+.hubSign{position:absolute;left:50%;top:6%;transform:translateX(-50%)}
+.hubSign .wordmark{font-size:min(9vmin,80px)}
+/* ---------- grid ---------- */
+#grid{background:#030657;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#grid .stars{position:fixed;inset:0;pointer-events:none}
+.gridTitle{text-align:center;margin:3vmin auto 2vmin;color:#fff;font-weight:900;font-size:min(7vmin,52px)}
+.gridTitle b{background:#fff;color:#F47773;padding:.5vmin 4vmin;border-radius:99px;display:inline-block}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(40vw,27vmin),1fr));gap:2.6vmin;padding:2vmin 5vmin 8vmin;position:relative;max-width:1400px;margin:0 auto}
+.tile{border-radius:3vmin;background:#fff;padding:1vmin;box-shadow:0 1vmin 0 #00023a;position:relative;animation:tileIn .5s backwards}
+.tile .art{height:20vmin;border-radius:2.2vmin;display:flex;align-items:center;justify-content:center;font-size:12vmin;overflow:hidden;position:relative}
+.tile .lbl{text-align:center;font-weight:900;font-size:min(4vmin,28px);color:#222;padding:1vmin 0 .4vmin}
+.tile .min{position:absolute;right:1.6vmin;top:1.6vmin;background:rgba(255,255,255,.85);border-radius:99px;font-size:min(2.6vmin,18px);padding:.3vmin 1.2vmin;font-weight:900;color:#555}
+.tile:active{transform:scale(.96)}
+@keyframes tileIn{from{transform:scale(.5) translateY(10vmin);opacity:0}}
+/* ---------- game common ---------- */
+.gameBg{position:absolute;inset:0}
+.prompt{position:absolute;left:50%;top:2vmin;transform:translateX(-50%);background:#fff;border-radius:99px;padding:1vmin 4vmin;font-size:min(6vmin,48px);font-weight:900;color:#333;box-shadow:0 .8vmin 0 rgba(0,0,0,.15);white-space:nowrap;z-index:20;display:flex;align-items:center;gap:2vmin}
+.prompt .say{font-size:.8em}
+.zh{display:none;color:#c0392b;font-size:.6em;font-weight:700;margin-left:.6em}
+body.zhOn .zh{display:inline}
+.item{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none;z-index:10;transition:transform .15s}
+.item .pic{font-size:15vmin;line-height:1;filter:drop-shadow(0 .8vmin 0 rgba(0,0,0,.18))}
+.item .pic svg{width:16vmin;height:16vmin;display:block}
+.item .wl{font-size:min(4.4vmin,34px);font-weight:900;color:#222;background:rgba(255,255,255,.9);border-radius:99px;padding:.2vmin 2vmin;margin-top:.4vmin}
+.item.drag{transform:scale(1.18);z-index:40;transition:none}
+.item.glow .pic{animation:glow 0.8s infinite}
+@keyframes glow{50%{filter:drop-shadow(0 0 3vmin #FFD400) drop-shadow(0 0 1vmin #fff);transform:scale(1.12)}}
+.wiggle{animation:wiggle .45s}
+@keyframes wiggle{25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
+.bounceIn{animation:bounceIn .5s}
+@keyframes bounceIn{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.bigWord{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);background:#fff;border-radius:4vmin;padding:2vmin 6vmin;text-align:center;z-index:45;box-shadow:0 1.4vmin 0 rgba(0,0,0,.2);animation:bounceIn .4s}
+.bigWord .pic{font-size:22vmin;line-height:1.1}
+.bigWord .pic svg{width:24vmin;height:24vmin}
+.bigWord .w{font-size:min(10vmin,80px);font-weight:900;color:#5800F5}
+.confetti{position:absolute;width:2vmin;height:3vmin;border-radius:.4vmin}
+.starFly{position:absolute;font-size:8vmin}
+/* reward */
+.reward{position:absolute;inset:0;background:rgba(3,6,87,.55);z-index:70;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3vmin}
+.reward .card{background:#fff;border-radius:5vmin;padding:3vmin 6vmin;text-align:center;animation:bounceIn .5s}
+.reward .card h1{margin:0;color:#F47773;font-size:min(10vmin,80px)}
+.reward .bigStars{font-size:12vmin}
+.reward .btns{display:flex;gap:6vmin}
+.reward .btns button{width:20vmin;height:20vmin;border-radius:50%;font-size:10vmin;background:#FFD400;box-shadow:0 1.2vmin 0 #c79a00}
+.reward .btns button.replay{background:#82F72D;box-shadow:0 1.2vmin 0 #4fae0b}
+/* monster */
+.monster .arm{transform-origin:20% 80%}
+.wave .arm.r{animation:wave .5s ease-in-out infinite alternate;transform-origin:10% 90%}
+@keyframes wave{from{transform:rotate(-15deg)}to{transform:rotate(25deg)}}
+.chomp .mouth{animation:chomp .22s 3}
+@keyframes chomp{50%{transform:scaleY(.15)}}
+.mouth{transform-origin:100px 128px;transform-box:view-box}
+.bob{animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-1.5vmin)}}
+/* story */
+.storyPage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.storyText{background:#fff;border-radius:3vmin;padding:1.5vmin 4vmin;font-size:min(8vmin,64px);font-weight:900;color:#333;margin-top:2vmin;box-shadow:0 1vmin 0 rgba(0,0,0,.12);z-index:5}
+.storyText .wd{display:inline-block;padding:0 .12em;border-radius:1vmin;transition:background .15s}
+.storyText .kw{background:#FFE94D}
+.storyText .wd.reading{background:#9be7ff}
+.arrow{position:absolute;top:50%;width:14vmin;height:14vmin;margin-top:-7vmin;border-radius:50%;background:linear-gradient(#ffd84d,#f2a900);box-shadow:0 1vmin 0 #b77d00;font-size:8vmin;color:#fff;font-weight:900;z-index:30;display:flex;align-items:center;justify-content:center}
+.arrow.next{right:2vmin}.arrow.prev{left:2vmin}
+.arrow.pulse{animation:pulse .8s infinite}
+.modeBtns{display:flex;gap:5vmin;margin-top:4vmin}
+.modeBtns button{border-radius:4vmin;padding:2.5vmin 4vmin;font-size:min(5.5vmin,44px);font-weight:900;color:#fff;box-shadow:0 1.2vmin 0 rgba(0,0,0,.25)}
+/* coloring */
+.palette{position:absolute;bottom:2vmin;left:50%;transform:translateX(-50%);display:flex;gap:1.6vmin;background:rgba(255,255,255,.9);padding:1.4vmin 2.4vmin;border-radius:99px;z-index:20}
+.crayon{width:9vmin;height:9vmin;border-radius:50%;border:.8vmin solid #fff;box-shadow:0 .5vmin 0 rgba(0,0,0,.2)}
+.crayon.sel{transform:scale(1.25);border-color:#333}
+.colorSvg{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:min(64vmin,80vw);height:min(64vmin,62vh)}
+.colorSvg path,.colorSvg ellipse,.colorSvg rect,.colorSvg circle,.colorSvg polygon{stroke:#333;stroke-width:4;stroke-linejoin:round}
+.doneBtn{position:absolute;right:3vmin;bottom:3vmin;width:14vmin;height:14vmin;border-radius:50%;background:#82F72D;font-size:8vmin;box-shadow:0 1vmin 0 #4fae0b;z-index:25}
+/* balloons */
+.balloon{position:absolute;width:20vmin;height:30vmin;z-index:10;touch-action:none}
+.balloon .b{width:20vmin;height:24vmin;border-radius:50% 50% 48% 48%;display:flex;align-items:center;justify-content:center;box-shadow:inset -2vmin -2vmin 0 rgba(0,0,0,.12),inset 1.5vmin 1.5vmin 0 rgba(255,255,255,.35)}
+.balloon .b .pic{font-size:11vmin}
+.balloon .b .pic svg{width:12vmin;height:12vmin}
+.balloon .s{width:.4vmin;height:7vmin;background:#666;margin:0 auto}
+/* memory */
+.mgrid{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);display:grid;gap:2vmin}
+.mcard{width:min(19vmin,22vw);height:min(19vmin,22vw);perspective:600px}
+.mcard .in{position:relative;width:100%;height:100%;transition:transform .4s;transform-style:preserve-3d}
+.mcard.flip .in{transform:rotateY(180deg)}
+.mcard .f,.mcard .bk{position:absolute;inset:0;border-radius:2.4vmin;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 .8vmin 0 rgba(0,0,0,.25)}
+.mcard .bk{background:repeating-linear-gradient(45deg,#5800F5 0 2vmin,#6d1fff 2vmin 4vmin);color:#FFD400;font-size:9vmin}
+.mcard .f{background:#fff;transform:rotateY(180deg);flex-direction:column}
+.mcard .f .pic{font-size:10vmin;line-height:1}
+.mcard .f .pic svg{width:10vmin;height:10vmin}
+.mcard .f .w{font-size:min(3.4vmin,26px);font-weight:900}
+.mcard.done{opacity:.55}
+@media (orientation:portrait){
+  .item .pic{font-size:12vmin}.tile .art{height:24vmin}
+}
+@media (orientation:portrait){
+  .prompt{top:calc(15vmin + env(safe-area-inset-top));font-size:6.5vmin}
+  .gridTitle{margin-top:16vmin}
+  .storyText{font-size:7vmin}
+}
