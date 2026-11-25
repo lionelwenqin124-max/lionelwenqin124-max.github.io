@@ -93,7 +93,7 @@ const Voice = (() => {
     const p=(n? loadPack(n).then(()=>bytes.has(k)?bytes.get(k):viaFile()).catch(viaFile) : viaFile()).catch(e=>{ bytes.delete(k); throw e; });
     bytes.set(k,p); return p; };
   const getBuf=k=>{ if(!bufs.has(k)) bufs.set(k, getBytes(k).then(ab=>Snd.decode(ab)).catch(e=>{ bufs.delete(k); throw e; })); return bufs.get(k); };
-  fetch('audio/manifest.json?v=3').then(r=>r.json()).then(a=>{ manifest=new Set(a); }).catch(()=>{});
+  fetch('audio/manifest.json?v=4').then(r=>r.json()).then(a=>{ manifest=new Set(a); }).catch(()=>{});
   fetch('audio/packs.json?v=2').then(r=>r.json()).then(o=>{ packIdx=o;
     // quietly pre-download the packs one by one (≈6 MB total) so voices play instantly later
     let n=1; const next=()=>{ if(n>o.packs) return; loadPack(n++).catch(()=>{}).finally(()=>setTimeout(next,50)); }; next();
