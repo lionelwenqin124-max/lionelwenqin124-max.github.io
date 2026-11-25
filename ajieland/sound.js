@@ -71,14 +71,33 @@ const Snd = (() => {
     zip(){ init(); if(!ctx)return; const t=ctx.currentTime; const o=ctx.createOscillator(),g=ctx.createGain(); o.type='sawtooth'; o.frequency.setValueAtTime(200,t); o.frequency.linearRampToValueAtTime(900,t+0.4); env(g,t,0.01,0.4,0.05); o.connect(g);g.connect(sfxGain);o.start(t);o.stop(t+0.5); },
     color(){ init(); if(!ctx)return; const t=ctx.currentTime; noise(t,0.15,0.12,2500,sfxGain); xylo(76,t,0.15,sfxGain); }
   };
-  return {init,jingle,startBed,stopBed,duck,setMusic,sfx,get musicEnabled(){return musicEnabled;}};
+  // ---- Recorded voice clips through the same (already unlocked) AudioContext: reliable on iPad/iPhone ----
+  function playClip(buf,onend){ init(); if(!ctx) return null; const s=ctx.createBufferSource(); s.buffer=buf; const g=ctx.createGain(); g.gain.value=1.0; s.connect(g); g.connect(master); s.onended=onend; s.start(ctx.currentTime+0.02); return s; }
+  function decode(ab){ init(); if(!ctx) return Promise.reject(new Error('no ctx')); return new Promise((res,rej)=>{ try{ const p=ctx.decodeAudioData(ab.slice(0),res,rej); if(p&&p.then) p.then(res,rej); }catch(e){ rej(e); } }); }
+  return {init,jingle,startBed,stopBed,duck,setMusic,sfx,playClip,decode,get hasCtx(){return !!ctx;},get musicEnabled(){return musicEnabled;}};
 })();
 
 // ===== Voice =====
 // Recorded clips in audio/<key>.mp3 (listed in audio/manifest.json) automatically replace the device voice.
 const Voice = (() => {
-  let manifest=new Set(), voicesF=null, voicesM=null, cur=null, queueId=0;
-  fetch('audio/manifest.json').then(r=>r.json()).then(a=>{manifest=new Set(a);}).catch(()=>{});
+  let manifest=new Set(), voicesF=null, voicesM=null, cur=null, curSrc=null, queueId=0;
+  const bytes=new Map(), bufs=new Map(), packP=new Map(); let packIdx=null;
+  // Iris clips ship as base64 inside audio/voiceN.json packs (GitHub Pages-friendly); per-file audio/<key>.mp3 is the fallback.
+  const b64=s=>{ const bin=atob(s), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return u.buffer; };
+  function loadPack(n){ if(!packP.has(n)) packP.set(n, fetch('audio/voice'+n+'.json?v=2').then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(o=>{ for(const k in o){ if(!bytes.has(k)) bytes.set(k, Promise.resolve(b64(o[k]))); } }).catch(e=>{ packP.delete(n); throw e; })); return packP.get(n); }
+  const getBytes=k=>{
+    if(bytes.has(k)) return bytes.get(k);
+    const n=packIdx&&packIdx.clips[k];
+    const viaFile=()=>fetch('audio/'+k+'.mp3').then(r=>{ if(!r.ok) throw new Error(r.status); return r.arrayBuffer(); });
+    const p=(n? loadPack(n).then(()=>bytes.has(k)?bytes.get(k):viaFile()).catch(viaFile) : viaFile()).catch(e=>{ bytes.delete(k); throw e; });
+    bytes.set(k,p); return p; };
+  const getBuf=k=>{ if(!bufs.has(k)) bufs.set(k, getBytes(k).then(ab=>Snd.decode(ab)).catch(e=>{ bufs.delete(k); throw e; })); return bufs.get(k); };
+  fetch('audio/manifest.json?v=2').then(r=>r.json()).then(a=>{ manifest=new Set(a); }).catch(()=>{});
+  fetch('audio/packs.json?v=2').then(r=>r.json()).then(o=>{ packIdx=o;
+    // quietly pre-download the packs one by one (≈6 MB total) so voices play instantly later
+    let n=1; const next=()=>{ if(n>o.packs) return; loadPack(n++).catch(()=>{}).finally(()=>setTimeout(next,50)); }; next();
+  }).catch(()=>{});
   const key = t => t.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
   function pick(){
     const vs=(window.speechSynthesis&&speechSynthesis.getVoices())||[]; const en=vs.filter(v=>/^en/i.test(v.lang));
@@ -88,14 +107,22 @@ const Voice = (() => {
   }
   if(window.speechSynthesis){ pick(); speechSynthesis.onvoiceschanged=pick; }
   function prime(){ try{ if(window.speechSynthesis){ const u=new SpeechSynthesisUtterance(' '); u.volume=0; speechSynthesis.speak(u);} }catch(e){} }
-  function stop(){ queueId++; try{ speechSynthesis.cancel(); }catch(e){} if(cur){ try{cur.pause();}catch(e){} cur=null; } Snd.duck(false); }
+  function stop(){ queueId++; try{ speechSynthesis.cancel(); }catch(e){} if(cur){ try{cur.pause();}catch(e){} cur=null; } if(curSrc){ try{curSrc.onended=null; curSrc.stop();}catch(e){} curSrc=null; } Snd.duck(false); }
   // say(text,{male,rate}) -> Promise resolved when finished (never rejects)
   function say(text,o={}){
     stop(); const my=++queueId; Snd.duck(true);
     return new Promise(res=>{
       const done=()=>{ if(my===queueId) Snd.duck(false); res(); };
       const k=key(text);
-      if(manifest.has(k)){ const a=new Audio('audio/'+k+'.mp3'); cur=a; a.onended=done; a.onerror=()=>tts(); a.play().catch(()=>tts()); setTimeout(done,9000); return; }
+      if(manifest.has(k)){
+        let settled=false; const fin=()=>{ if(!settled){ settled=true; done(); } }; const fallback=()=>{ if(!settled && my===queueId) tts(); };
+        if(Snd.hasCtx||window.AudioContext||window.webkitAudioContext){
+          getBuf(k).then(buf=>{ if(my!==queueId){ fin(); return; } curSrc=Snd.playClip(buf,()=>{ curSrc=null; fin(); }); if(!curSrc) fallback(); setTimeout(fin,(buf.duration||3)*1000+1500); }).catch(()=>{
+            // last resort: plain <audio>, then device voice
+            const a=new Audio('audio/'+k+'.mp3'); cur=a; a.onended=fin; a.onerror=fallback; a.play().catch(fallback); setTimeout(fin,9000); });
+        } else { const a=new Audio('audio/'+k+'.mp3'); cur=a; a.onended=fin; a.onerror=fallback; a.play().catch(fallback); setTimeout(fin,9000); }
+        return;
+      }
       tts();
       function tts(){
         if(!window.speechSynthesis){ setTimeout(done,600); return; }
