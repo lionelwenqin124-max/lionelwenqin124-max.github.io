@@ -84,7 +84,7 @@ const Voice = (() => {
   const bytes=new Map(), bufs=new Map(), packP=new Map(); let packIdx=null;
   // Iris clips ship as base64 inside audio/voiceN.json packs (GitHub Pages-friendly); per-file audio/<key>.mp3 is the fallback.
   const b64=s=>{ const bin=atob(s), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return u.buffer; };
-  function loadPack(n){ if(!packP.has(n)) packP.set(n, fetch('audio/voice'+n+'.json?v=2').then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
+  function loadPack(n){ if(!packP.has(n)) packP.set(n, fetch('audio/voice'+n+'.json?v=5').then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
       .then(o=>{ for(const k in o){ if(!bytes.has(k)) bytes.set(k, Promise.resolve(b64(o[k]))); } }).catch(e=>{ packP.delete(n); throw e; })); return packP.get(n); }
   const getBytes=k=>{
     if(bytes.has(k)) return bytes.get(k);
@@ -93,7 +93,7 @@ const Voice = (() => {
     const p=(n? loadPack(n).then(()=>bytes.has(k)?bytes.get(k):viaFile()).catch(viaFile) : viaFile()).catch(e=>{ bytes.delete(k); throw e; });
     bytes.set(k,p); return p; };
   const getBuf=k=>{ if(!bufs.has(k)) bufs.set(k, getBytes(k).then(ab=>Snd.decode(ab)).catch(e=>{ bufs.delete(k); throw e; })); return bufs.get(k); };
-  fetch('audio/manifest.json?v=4').then(r=>r.json()).then(a=>{ manifest=new Set(a); }).catch(()=>{});
+  fetch('audio/manifest.json?v=5').then(r=>r.json()).then(a=>{ manifest=new Set(a); }).catch(()=>{});
   fetch('audio/packs.json?v=2').then(r=>r.json()).then(o=>{ packIdx=o;
     // quietly pre-download the packs one by one (≈6 MB total) so voices play instantly later
     let n=1; const next=()=>{ if(n>o.packs) return; loadPack(n++).catch(()=>{}).finally(()=>setTimeout(next,50)); }; next();
