@@ -28,8 +28,8 @@ all:['全部','Tout','All'],hideTr:['遮住翻譯自我測驗','Cacher la traduc
 inText:['課文例句','Dans le texte','In the text'],
 pA1:['A1 問答','A1 · Questions','A1 Q&A'],pA2a:['A2 理解（一）','A2 · Compréhension 1','A2 comprehension 1'],pA2b:['A2 理解（二）','A2 · Compréhension 2','A2 comprehension 2'],
 pMatch:['單字配對','Association de mots','Vocabulary matching'],pFill:['克漏字','Texte à trous','Fill in the blanks'],pGram:['文法選擇題','Grammaire (QCM)','Grammar MCQ'],pB1:['B1 短文寫作','B1 · Expression écrite','B1 writing'],pMix:['Kahoot 綜合搶答','Kahoot mix','Kahoot mix'],
-pA1d:['10 題簡單問答','10 questions simples','10 simple questions'],pA2ad:['10 題＋翻譯＋A2 重點','10 questions + traductions + points A2','10 Qs + translations + A2 key points'],pA2bd:['10 題（只有提示）＋參考答案','10 questions (indices) + réponses modèles','10 Qs (hints) + model answers'],
-pMatchd:['établi, copeaux, ébrancher…','établi, copeaux, ébrancher…','établi, copeaux, ébrancher…'],pFilld:['violoncelle, attristé, brutal…','violoncelle, attristé, brutal…','violoncelle, attristé, brutal…'],pGramd:['sa, s\'amoncellent, nulle part, mus…','sa, s\'amoncellent, nulle part, mus…','sa, s\'amoncellent, nulle part, mus…'],pB1d:['2 題＋範文對照','2 sujets + modèles','2 prompts + model answers'],pMixd:['15 題限時、連擊加分','15 questions chronométrées','15 timed questions, streak bonus'],
+pA1d:['學習單 10 題＋A1 重點','Les 10 questions de la fiche + points A1','The worksheet\'s 10 Qs + A1 key points'],pA2ad:['學習單 10 題＋提示＋A2 重點','Les 10 questions de la fiche + indices + points A2','The worksheet\'s 10 Qs + hints + A2 key points'],pA2bd:['學習單 10 題（只有提示）＋依課文寫的參考答案','Les 10 questions (indices) + réponses modèles tirées du texte','The worksheet\'s 10 Qs (hints) + model answers from the text'],
+pMatchd:['établi, copeaux, ébrancher…','établi, copeaux, ébrancher…','établi, copeaux, ébrancher…'],pFilld:['violoncelle, attristé, brutal…','violoncelle, attristé, brutal…','violoncelle, attristé, brutal…'],pGramd:['學習單第 1–5 題：sa, s\'amoncellent, en, nulle part, mu','Fiche Q1–5 : sa, s\'amoncellent, en, nulle part, mu','Worksheet Q1–5: sa, s\'amoncellent, en, nulle part, mu'],pB1d:['2 題＋範文對照','2 sujets + modèles','2 prompts + model answers'],pMixd:['15 題限時、連擊加分','15 questions chronométrées','15 timed questions, streak bonus'],
 play:['開始','Jouer','Play'],again:['再玩一次','Rejouer','Play again'],next:['下一題','Suivant','Next'],results:['看結果','Résultats','Results'],timer:['計時（20 秒）','Chrono (20 s)','Timer (20 s)'],
 pick:['選擇題','Choisir','Pick'],type:['自己寫','Écrire','Type'],check:['檢查','Vérifier','Check'],dunno:['我不知道','Je ne sais pas','I don\'t know'],
 model:['參考答案','Réponse modèle','Model answer'],keywords:['關鍵字','Mots-clés','Key words'],keypoint:['A2 重點','Point A2','A2 key point'],hint:['提示','Indice','Hint'],
@@ -48,7 +48,7 @@ errors:['錯誤','erreur(s)','mistake(s)'],testInfo:['Test blanc：下週（不�
 keyNote:['⚠️ 講義答案註記','⚠️ Note sur le corrigé','⚠️ Note on the answer key'],noSR:['這個瀏覽器不支援語音辨識，請用打字（iPhone 請用 Safari）。','Reconnaissance vocale indisponible : écris ta réponse.','Speech recognition isn\'t available here — please type (on iPhone use Safari).'],
 noRec:['這個瀏覽器無法錄音。','Enregistrement impossible sur ce navigateur.','Recording isn\'t supported in this browser.'],micDenied:['沒有麥克風權限。','Micro refusé.','Microphone permission denied.'],
 tapPair:['先點左邊的字，再點右邊的意思','Touche un mot, puis sa définition','Tap a word, then its definition'],tapFill:['點下面的字填進空格（點空格可取消）','Touche un mot pour remplir le trou (touche un trou pour l\'effacer)','Tap a word to fill the next blank (tap a blank to clear it)'],
-q:['題','Q','Q'],of:['／','/','/'],found:['找到','trouvés','found'],
+q:['題','Q','Q'],wsTag:['📄 老師學習單題目','📄 Questions de la fiche du professeur','📄 Teacher\'s worksheet questions'],extra:['➕ 額外練習（不是學習單）','➕ Exercices en plus (hors fiche)','➕ Extra practice (not from the worksheet)'],vsText:['📖 和課文對照','📖 Comparaison avec le texte','📖 Checked against the story text'],pGramX:['額外文法題','Grammaire en plus','Extra grammar'],pGramXd:['ne…que、部分冠詞、被動、passé simple…','ne…que, partitifs, passif, passé simple…','ne…que, partitives, passive, passé simple…'],ws:['學習單','Fiche','Worksheet'],of:['／','/','/'],found:['找到','trouvés','found'],
 };
 const IDX={zh:0,fr:1,en:2};
 const U=k=>{const a=UI[k]||[k,k,k];return `<span class="U uz">${a[0]}</span><span class="U uf">${a[1]}</span><span class="U ue">${a[2]}</span>`};
@@ -206,11 +206,13 @@ function bindLearn(tab){loadG('x');if(tab!=='voc')return;let f='0';
  document.querySelectorAll('#luVf a').forEach(a=>a.onclick=e=>{e.preventDefault();f=a.dataset.vf;document.querySelectorAll('#luVf a').forEach(x=>x.classList.toggle('on',x===a));draw()});
  $('#luHide').onchange=e=>{document.querySelector('.lu').classList.toggle('hidetr',e.target.checked);draw()}}
 /* ---------- PRACTICE ---------- */
-const PR=[['a1','🅰️','pA1','pA1d'],['a2a','📗','pA2a','pA2ad'],['a2b','📘','pA2b','pA2bd'],['match','🔗','pMatch','pMatchd'],['fill','🧩','pFill','pFilld'],['gram','✍️','pGram','pGramd'],['b1','📝','pB1','pB1d'],['mix','🎮','pMix','pMixd']];
+const PR=[['a1','🅰️','pA1','pA1d'],['a2a','📗','pA2a','pA2ad'],['a2b','📘','pA2b','pA2bd'],['match','🔗','pMatch','pMatchd'],['fill','🧩','pFill','pFilld'],['gram','✍️','pGram','pGramd'],['b1','📝','pB1','pB1d'],['gramx','➕','pGramX','pGramXd'],['mix','🎮','pMix','pMixd']];const WS=['a1','a2a','a2b','match','fill','gram','b1'];
 function saveBest(k,v){const b=st.get('best',{});if(!(b[k]>=v)){b[k]=v;st.set('best',b);return true}return false}
-function practiceHub(){const b=st.get('best',{});return `${top(U('practice'))}<h1>🎮 ${U('practice')}</h1><div class="lu-grid">${PR.map(([k,e,l,d])=>`<a class="card${k==='mix'?' lu-card-key':''}" href="#/luthier/practice/${k}"><div class="emo" style="--c:#8b5a2b">${e}</div><h3>${U(l)}</h3><p>${U(d)}</p>${b[k]!=null?`<p class="lu-small">🏆 ${b[k]}</p>`:''}</a>`).join('')}</div>`}
+function practiceHub(){const b=st.get('best',{});const card=([k,e,l,d])=>`<a class="card" href="#/luthier/practice/${k}"><div class="emo" style="--c:#8b5a2b">${e}</div>${WS.includes(k)?`<span class="lu-tag">📄 ${U('ws')}</span>`:''}<h3>${U(l)}</h3><p>${U(d)}</p>${b[k]!=null?`<p class="lu-small">🏆 ${b[k]}</p>`:''}</a>`;
+ return `${top(U('practice'))}<h1>🎮 ${U('practice')}</h1><div class="section-title"><div><h2>${U('wsTag')}</h2></div></div><div class="lu-grid">${PR.filter(x=>WS.includes(x[0])).map(card).join('')}</div>
+ <div class="section-title"><div><h2>${U('extra')}</h2></div></div><div class="lu-grid">${PR.filter(x=>!WS.includes(x[0])).map(card).join('')}</div>`}
 const ptabs=cur=>`<div class="lu-tabs">${PR.map(([k,e,l])=>`<a class="${cur===k?'on':''}" href="#/luthier/practice/${k}">${e} ${U(l)}</a>`).join('')}</div>`;
-function practice(k){const m=PR.find(x=>x[0]===k);if(!m)return practiceHub();return `${top(U(m[2]))}${ptabs(k)}<div id="luP" class="k-wrap"></div>`}
+function practice(k){const m=PR.find(x=>x[0]===k);if(!m)return practiceHub();return `${top(U(m[2]))}${ptabs(k)}<p class="lu-small" style="text-align:center"><span class="lu-tag">${U(WS.includes(k)?'wsTag':'extra')}</span></p><div id="luP" class="k-wrap"></div>`}
 /* generic Kahoot MCQ runner. item: {q,sub,opts:[text],ok:text,expl,sayQ,sayA,badge,flag} */
 function runMCQ(el,items,key,title,o={}){let timerOn=st.get('timer',o.timer!==false);
  const intro=()=>{el.innerHTML=`<div class="card done-screen"><div class="big" style="font-size:3rem">${o.emo||'🎮'}</div><h2>${title}</h2><p>${items.length} ${U('q')} · 🔥 streak</p><p class="lu-small">🏆 ${U('best')} : <b>${(st.get('best',{})[key])??'—'}</b></p>
@@ -233,13 +235,13 @@ function runMCQ(el,items,key,title,o={}){let timerOn=st.get('timer',o.timer!==fa
   const end=()=>{const nb=saveBest(key,score);xp(right*2);if(right===items.length&&H().confetti)H().confetti();
    el.innerHTML=`<div class="card done-screen"><div class="big" style="font-size:3rem">🏁</div><h2>${score} pts · ${right}/${items.length}</h2>${nb?'<p>🏆 New record!</p>':''}
    <button class="btn btn-primary" id="luAg">↻ ${U('again')}</button></div>${miss.length?`<h3>🩹 ${U('review')}</h3>${miss.map(x=>`<div class="lu-fb"><p lang="fr"><b>${x.q}</b></p><p lang="fr">✔️ ${esc(x.ok)}</p>${x.expl||''}</div>`).join('')}`:''}`;
-   $('#luAg').onclick=()=>{items=o.regen?o.regen():shuffle(items);run()}};
+   $('#luAg').onclick=()=>{items=o.regen?o.regen():o.keep?items:shuffle(items);run()}};
   q()};
  intro()}
 /* typed/oral-style runner for A2: item {q,sub,hint,model,mtr,kw,extra,sayQ} */
 function runTyped(el,items,key,title){let i=0,score=0,streak=0;const res=[];
  const q=()=>{if(i>=items.length)return end();const x=items[i];
-  el.innerHTML=`<div class="k-top"><span>${i+1}/${items.length}</span><span>⭐ ${score}</span><span>🔥 ${streak}</span></div><div class="k-q"><h2 lang="fr">${esc(x.q)}</h2>${say(x.q)}${x.sub}${x.hint?`<p class="lu-small">💡 ${U('hint')} : <i lang="fr">${esc(x.hint)}</i></p>`:''}</div>
+  el.innerHTML=`<div class="k-top"><span>${i+1}/${items.length}</span><span>⭐ ${score}</span><span>🔥 ${streak}</span></div><div class="k-q"><h2 lang="fr">${esc(x.q)}</h2>${say(x.q)}${x.sub}${x.hint?`<p class="lu-small">💡 ${U('hint')} : <i>${esc(x.hint)}</i></p>`:''}</div>
   <textarea id="luTa" lang="fr" data-ph="yourAns" placeholder="${esc(L('yourAns'))}" autocapitalize="sentences"></textarea>${accBar()}
   <div class="lu-row"><button class="lu-btn" id="luMic">🎤 ${U('speak')}</button><button class="btn btn-primary" id="luC">${U('check')}</button><button class="lu-btn" id="luDk">${U('dunno')}</button></div><div id="luF"></div>`;toTop(el);
   $('#luMic').onclick=()=>dictate($('#luMic'),$('#luTa'));
@@ -253,27 +255,30 @@ function runTyped(el,items,key,title){let i=0,score=0,streak=0;const res=[];
  const end=()=>{const nb=saveBest(key,score);xp(Math.round(res.reduce((a,b)=>a+b,0)*3));el.innerHTML=`<div class="card done-screen"><div class="big" style="font-size:3rem">🏁</div><h2>${score} pts</h2>${nb?'<p>🏆 New record!</p>':''}<button class="btn btn-primary" id="luAg">↻ ${U('again')}</button></div>`;$('#luAg').onclick=()=>{i=0;score=0;streak=0;res.length=0;items=shuffle(items);q()}};
  q()}
 const trQ=x=>T(x.tzh,x.ten);
-function a2Items(set){return D[set].map(x=>({q:x.q,sub:trQ(x),hint:x.hint||'',model:x.a,mtr:T(x.azh,x.aen),kw:x.kw,extra:x.kzh?`<p class="lu-small" style="margin-top:8px">📌 ${U('keypoint')}</p>${T(x.kzh,x.ken)}`:''}))}
-function a2Mcq(set){const all=D[set];return all.map(x=>{const w=x.w||shuffle(all.filter(y=>y!==x).map(y=>y.a)).slice(0,3);return{q:esc(x.q),sayQ:x.q,sub:trQ(x),opts:[x.a,...w],ok:x.a,sayA:x.a,expl:T(x.azh,x.aen)+(x.kzh?`<p class="lu-small" style="margin-top:6px">📌 ${U('keypoint')}</p>${T(x.kzh,x.ken)}`:'')}})}
+const vsT=x=>x&&x.fzh?`<div class="lu-flag">${U('vsText')} : ${T(x.fzh,x.fen)}</div>`:'';
+const kp=x=>x.kzh?`<p class="lu-small" style="margin-top:8px">📌 ${U('keypoint')}</p>${T(x.kzh,x.ken)}`:'';
+const hintP=x=>x.hint?`<p class="lu-small">💡 ${U('hint')} : <i>${esc(x.hint)}</i></p>`:'';
+function a2Items(set){return D[set].map(x=>({q:x.q,sub:trQ(x),hint:x.hint||'',model:x.a,mtr:T(x.azh,x.aen),kw:x.kw,extra:kp(x)+vsT(x)}))}
+function a2Mcq(set){const all=D[set];return all.map(x=>{const w=x.w||shuffle(all.filter(y=>y!==x).map(y=>y.a)).slice(0,3);return{q:esc(x.q),sayQ:x.q,sub:trQ(x)+hintP(x),opts:[x.a,...w],ok:x.a,sayA:x.a,expl:T(x.azh,x.aen)+kp(x),flag:vsT(x)}})}
 const meaning=v=>LG==='zh'?v.zh:LG==='en'?v.en:v.zh+' · '+v.en;
 function mixItems(){const it=[];
- shuffle(D.a1).slice(0,4).forEach(x=>it.push({q:esc(x.q),sayQ:x.q,sub:trQ(x),opts:[x.a,...x.w],ok:x.a,sayA:x.a,expl:T(x.azh,x.aen),badge:'<span class="lu-tag">A1</span>'}));
+ a2Mcq('a1').sort(()=>Math.random()-.5).slice(0,4).forEach(x=>{x.badge='<span class="lu-tag">A1</span>';it.push(x)});
  a2Mcq('a2a').sort(()=>Math.random()-.5).slice(0,3).forEach(x=>{x.badge='<span class="lu-tag">A2</span>';it.push(x)});
- gramItems().sort(()=>Math.random()-.5).slice(0,4).forEach(x=>{x.badge='<span class="lu-tag">Grammaire</span>';it.push(x)});
+ gramItems(null).sort(()=>Math.random()-.5).slice(0,4).forEach(x=>{x.badge='<span class="lu-tag">Grammaire</span>';it.push(x)});
  shuffle(VO).slice(0,4).forEach(v=>{const w=shuffle(VO.filter(y=>y!==v&&meaning(y)!==meaning(v))).slice(0,3).map(meaning);it.push({q:`« ${esc(v.w)} »`,sayQ:v.say,sub:`<p class="lu-small">${U('tVoc')} · §${v.p}</p>`,opts:[meaning(v),...w],ok:meaning(v),sayA:v.say,expl:`<p lang="fr">🇫🇷 <b>${esc(v.w)}</b></p>`,badge:'<span class="lu-tag">Vocabulaire</span>'})});
  return shuffle(it)}
-function gramItems(){return D.gm.map(x=>({q:esc(x.q).replace('___','<u>&nbsp;?&nbsp;</u>'),sub:'',opts:x.o,ok:x.o[x.c],sayA:x.full,expl:T(x.xzh,x.xen),flag:x.flag?`<div class="lu-flag">${U('keyNote')}: ${T('講義答案印「A. s\'amoncèlent」，但解釋說要雙寫 l → 正確應為 B. s\'amoncellent。','The key prints « A. s\'amoncèlent » but explains doubling the l → the right answer is B. s\'amoncellent.')}</div>`:''}))}
+function gramItems(ws){return D.gm.filter(x=>ws==null||x.ws===ws).map(x=>({badge:x.ws?`<span class="lu-tag">📄 ${U('ws')} Q${x.n}</span>`:`<span class="lu-tag">➕</span>`,q:esc(x.q).replace('___','<u>&nbsp;?&nbsp;</u>'),sub:'',opts:x.o,ok:x.o[x.c],sayA:x.full,expl:T(x.xzh,x.xen),flag:x.flag==='amonc'?`<div class="lu-flag">${U('keyNote')}: ${T('學習單答案寫「A」，但它自己的解釋說要雙寫 l（ll，不加重音）→ 正確答案是 B. s\'amoncellent。（1990 新拼法也接受 s\'amoncèlent，但這份學習單教的是 ll。）','The key says « A » but its own explanation says to double the l (ll, no accent) → the right answer is B. s\'amoncellent. (The 1990 spelling reform also accepts s\'amoncèlent, but this worksheet teaches the ll form.)')}</div>`:''}))}
 function bindPractice(k){loadG('x');const el=$('#luP');if(!el)return;
- if(k==='a1')runMCQ(el,shuffle(D.a1.map(x=>({q:esc(x.q),sayQ:x.q,sub:trQ(x),opts:[x.a,...x.w],ok:x.a,sayA:x.a,expl:T(x.azh,x.aen)}))),'a1',U('pA1'),{emo:'🅰️'});
- else if(k==='a2a'||k==='a2b'){const md=st.get('a2mode','pick');el.innerHTML=`<div class="lu-row" style="justify-content:center"><button class="lu-btn${md==='pick'?' on':''}" data-md="pick">🅰️ ${U('pick')}</button><button class="lu-btn${md==='type'?' on':''}" data-md="type">⌨️🎤 ${U('type')}</button></div><div id="luP2"></div>`;
+ if(k==='a1'||k==='a2a'||k==='a2b'){const NM={a1:['pA1','🅰️'],a2a:['pA2a','📗'],a2b:['pA2b','📘']}[k];const md=st.get('a2mode','pick');el.innerHTML=`<div class="lu-row" style="justify-content:center"><button class="lu-btn${md==='pick'?' on':''}" data-md="pick">🅰️ ${U('pick')}</button><button class="lu-btn${md==='type'?' on':''}" data-md="type">⌨️🎤 ${U('type')}</button></div><div id="luP2"></div>`;
   const go=m=>{st.set('a2mode',m);el.querySelectorAll('[data-md]').forEach(b=>b.classList.toggle('on',b.dataset.md===m));const e2=$('#luP2');
-   if(m==='pick')runMCQ(e2,shuffle(a2Mcq(k)),k,U(k==='a2a'?'pA2a':'pA2b'),{emo:k==='a2a'?'📗':'📘'});else runTyped(e2,shuffle(a2Items(k)),k+'t',U(k==='a2a'?'pA2a':'pA2b'))};
+   if(m==='pick')runMCQ(e2,a2Mcq(k),k,U(NM[0]),{emo:NM[1],keep:1});else runTyped(e2,a2Items(k),k+'t',U(NM[0]))};
   el.querySelectorAll('[data-md]').forEach(b=>b.onclick=()=>go(b.dataset.md));go(md)}
- else if(k==='gram')runMCQ(el,shuffle(gramItems()),'gram',U('pGram'),{emo:'✍️'});
+ else if(k==='gram')runMCQ(el,gramItems(1),'gram',U('pGram'),{emo:'✍️',keep:1});
+ else if(k==='gramx')runMCQ(el,shuffle(gramItems(0)),'gramx',U('pGramX'),{emo:'➕'});
  else if(k==='mix')runMCQ(el,mixItems(),'mix',U('pMix'),{emo:'🎮',regen:mixItems});
  else if(k==='match')bindMatch(el);else if(k==='fill')bindFill(el);else if(k==='b1')bindB1(el)}
 function bindMatch(el){const M=D.match;const R=shuffle(M.map((m,i)=>i));let sel=null,left=M.length,miss=0;const t0=Date.now();
- el.innerHTML=`<div class="card"><h2>🔗 ${U('pMatch')}</h2><p class="lu-small">${U('tapPair')}</p><div class="lu-match">${M.map((m,i)=>`<button data-l="${i}" lang="fr"><b>${esc(m.w)}</b></button><button data-r="${R[i]}"><span lang="fr">${esc(M[R[i]].d)}</span>${T(M[R[i]].zh,M[R[i]].en)}</button>`).join('')}</div><div id="luMR"></div></div>`;
+ el.innerHTML=`<div class="card"><h2>🔗 ${U('pMatch')}</h2><p class="lu-small">${U('tapPair')}</p><div class="lu-match">${M.map((m,i)=>`<button data-l="${i}" lang="fr"><b>${esc(m.w)}</b></button><button data-r="${R[i]}"><span lang="fr"><b>${M[R[i]].L}.</b> ${esc(M[R[i]].d)}</span>${T(M[R[i]].zh,M[R[i]].en)}</button>`).join('')}</div><div id="luMR"></div></div>`;
  el.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{if(b.disabled)return;el.querySelectorAll('[data-l]').forEach(c=>c.classList.remove('sel'));b.classList.add('sel');sel=b;play(M[+b.dataset.l].w)});
  el.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{if(!sel||b.disabled)return;
   if(sel.dataset.l===b.dataset.r){[sel,b].forEach(c=>{c.classList.remove('sel');c.classList.add('ok');c.disabled=true});sel=null;sfx(true);
@@ -289,14 +294,14 @@ function bindFill(el){const F=D.fill;const parts=F.text.split(/\{(\d)\}/);const 
  $('#luC').onclick=()=>{let n=0;el.querySelectorAll('.lu-blank').forEach(b=>{const j=+b.dataset.b,ok=val[j]===F.ans[j];if(ok)n++;b.classList.toggle('ok',ok);b.classList.toggle('bad',!ok)});
   const sc=n*100;saveBest('fill',sc);sfx(n===F.ans.length);if(n===F.ans.length){xp(5);H().confetti&&H().confetti()}
   $('#luF').innerHTML=`<div class="k-pop ${n===F.ans.length?'ok':n>=3?'mid':'bad'}">${n}/${F.ans.length}</div><div class="lu-fb"><p lang="fr">${esc(F.full)} ${say(F.full)}</p>${T(F.zh,F.en)}
-  <ol>${F.ans.map((a,i)=>`<li><b lang="fr">${esc(a)}</b> — ${T(F.why[i].zh,F.why[i].en,'in')}</li>`).join('')}</ol></div><div class="lu-row"><button class="lu-btn" id="luAg">↻ ${U('again')}</button></div>`;$('#luAg').onclick=()=>bindFill(el)};
+  <ol>${F.ans.map((a,i)=>`<li><b lang="fr">${esc(a)}</b> — ${T(F.why[i].zh,F.why[i].en,'in')}</li>`).join('')}</ol>${vsT(F)}</div><div class="lu-row"><button class="lu-btn" id="luAg">↻ ${U('again')}</button></div>`;$('#luAg').onclick=()=>bindFill(el)};
  draw()}
-function bindB1(el){el.innerHTML=D.b1.map((x,i)=>`<div class="card lu-para"><h3>📝 ${i+1}. <span lang="fr">${esc(x.q)}</span></h3>${say(x.q)}${trQ(x)}
+function bindB1(el){el.innerHTML=D.b1.map((x,i)=>`<div class="card lu-para"><h3>📝 ${i+1}. <span lang="fr">${esc(x.q)}</span></h3>${say(x.q)}${trQ(x)}${hintP(x)}
  <textarea id="luB${i}" lang="fr" data-ph="yourText" placeholder="${esc(L('yourText'))}" style="margin-top:8px"></textarea>${accBar()}<div class="lu-row"><span class="lu-small" id="luBw${i}">0 ${U('words')}</span><button class="lu-btn" data-mic="${i}">🎤 ${U('speak')}</button><button class="btn btn-primary" data-cmp="${i}">${U('compare')}</button></div><div id="luBf${i}"></div></div>`).join('');
  D.b1.forEach((x,i)=>{const ta=$('#luB'+i);const sv=st.get('b1_'+i,'');ta.value=sv;const wc=()=>{$('#luBw'+i).innerHTML=(ta.value.trim()?ta.value.trim().split(/\s+/).length:0)+' '+U('words');st.set('b1_'+i,ta.value)};ta.oninput=wc;wc()});
  el.querySelectorAll('[data-mic]').forEach(b=>b.onclick=()=>dictate(b,$('#luB'+b.dataset.mic)));
  el.querySelectorAll('[data-cmp]').forEach(b=>b.onclick=()=>{const i=+b.dataset.cmp,x=D.b1[i],g=kwGrade($('#luB'+i).value,x.kw);saveBest('b1',Math.max(st.get('best',{}).b1||0,Math.round(g.ratio*1000)));
-  $('#luBf'+i).innerHTML=`<div class="lu-fb"><p class="lu-small">🔑 ${U('keywords')} (${g.hits.filter(Boolean).length}/${x.kw.length})</p>${kwChips(x.kw,g.hits)}<p lang="fr">💬 <b>${U('model')} :</b> ${esc(x.a)} ${say(x.a)}</p>${T(x.azh,x.aen)}</div>`})}
+  $('#luBf'+i).innerHTML=`<div class="lu-fb"><p class="lu-small">🔑 ${U('keywords')} (${g.hits.filter(Boolean).length}/${x.kw.length})</p>${kwChips(x.kw,g.hits)}<p lang="fr">💬 <b>${U('model')} :</b> ${esc(x.a)} ${say(x.a)}</p>${T(x.azh,x.aen)}${vsT(x)}</div>`})}
 /* ---------- MOCK ORAL TEST ---------- */
 let OR=null;
 function oral(){return `${top(U('oral'))}<div class="lu-head" style="padding:14px 18px"><h1 style="font-size:1.4rem">🎤 ${U('oral')}</h1><p class="lu-small" style="color:#fff">${U('oralD')}</p>
