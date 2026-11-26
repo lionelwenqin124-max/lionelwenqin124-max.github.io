@@ -29,7 +29,7 @@ mark{background:color-mix(in srgb,var(--accent) 25%,transparent);color:inherit;p
 .brand span:last-child{display:none}@media(min-width:420px){.brand span:last-child{display:inline}}
 @media(min-width:760px){.nav{display:flex}}
 .hide-sm{display:none}@media(min-width:900px){.hide-sm{display:inline}}
-.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:20;display:grid;grid-template-columns:repeat(6,1fr);background:var(--surface);border-top:1px solid var(--line);padding:6px 0 calc(6px + env(safe-area-inset-bottom))}
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:20;display:grid;grid-template-columns:repeat(7,1fr);background:var(--surface);border-top:1px solid var(--line);padding:6px 0 calc(6px + env(safe-area-inset-bottom))}
 .tabbar a{display:flex;flex-direction:column;align-items:center;font-size:.72rem;text-decoration:none;color:var(--muted);font-weight:600;gap:2px;min-height:48px;justify-content:center}.tabbar span{font-size:1.25rem}
 .tabbar a.active{color:var(--primary)}@media(min-width:760px){.tabbar{display:none}}
 main{max-width:1120px;margin:0 auto;padding:var(--s4) var(--s3) var(--s6);outline:none}
