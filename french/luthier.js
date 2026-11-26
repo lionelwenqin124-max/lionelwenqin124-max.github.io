@@ -13,6 +13,7 @@ const xp=n=>H().addXP&&H().addXP(n);
 let LG=st.get('lang','zh');if(!['zh','fr','en'].includes(LG))LG='zh';
 const setLangAttr=()=>document.documentElement.setAttribute('data-lulang',LG);setLangAttr();
 const UI={
+sndOn:['聽聲音','Son','Sound'],sndOff:['靜音','Muet','Mute'],animTip:['🎬 每段上方有動畫短片：點 🔇 打開聲音，聽角色說法語','🎬 Chaque paragraphe a une petite scène animée : touchez 🔇 pour entendre les personnages parler français','🎬 Each paragraph has a short animated scene: tap 🔇 to hear the characters speak French'],
 home:['首頁','Accueil','Home'],read:['讀故事','Lire l\'histoire','Read the story'],learn:['課程重點','Leçons','Lessons'],practice:['練習','Exercices','Practice'],oral:['模擬口試','Oral blanc','Mock oral'],
 readD:['11 段原文＋真人語速法語朗讀（正常／慢速）、逐行翻譯、點單字看解釋','11 paragraphes, audio normal / lent, traduction ligne par ligne, mots cliquables','11 paragraphs with French audio (normal/slow), line-by-line translation, tap-a-word glossary'],
 learnD:['每段大意、重點單字（有發音）、文法重點','Résumés, vocabulaire avec audio, points de grammaire','Paragraph summaries, key vocabulary with audio, grammar points'],
@@ -65,7 +66,7 @@ const loadAll=()=>Promise.all(['x','o','p','ps'].map(loadG));
 let cur=null,curBtn=null;
 function keyOf(t,slow){const k=D.ak[t];return k?(slow?'S'+k.slice(1):k):null}
 function stopAudio(){if(cur){cur.pause();cur=null}if(curBtn){curBtn.classList.remove('playing');curBtn=null}try{speechSynthesis.cancel()}catch(e){}}
-function play(t,o={}){const btn=o.btn||null;if(btn&&btn===curBtn){stopAudio();return}stopAudio();
+function play(t,o={}){const btn=o.btn||null;if(btn&&btn===curBtn){stopAudio();return}stopAudio();try{muteScenes()}catch(e){}
  const k=keyOf(t,o.slow),A=window.LU_AUD||{};
  if(!k||!A[k]){if(k&&!o.retry){if(btn)btn.classList.add('playing');curBtn=btn;loadAll().then(()=>{if(curBtn===btn){curBtn=null;if(btn)btn.classList.remove('playing');play(t,Object.assign({},o,{retry:1}))}});return}H().speak&&H().speak(t);return}
  const a=new Audio('data:audio/mpeg;base64,'+A[k]);cur=a;if(btn){btn.classList.add('playing');curBtn=btn}
@@ -164,7 +165,71 @@ document.addEventListener('click',e=>{const g=e.target.closest&&e.target.closest
  if(g){const v=VO[+g.dataset.g];const sh=sheet();sh.innerHTML=`<button class="x" aria-label="Close">✕</button><h3>${esc(v.w)} ${say(v.say)}</h3>${T(v.zh,v.en)}<p class="lu-small">§${v.p}</p>`;sh.classList.add('open');play(v.say);return}
  if(s&&s.classList.contains('open')&&(e.target.closest('.x')||!e.target.closest('.lu-sheet')))s.classList.remove('open')});
 window.addEventListener('hashchange',()=>{const s=document.getElementById('luSheet');if(s)s.classList.remove('open');stopAudio();if(rec)try{rec.stop()}catch(e){};if(mr)try{mr.stop()}catch(e){}});
-function paraCard(p,o={}){return `<div class="card lu-para${o.tr?' showtr':''}" id="lp${p.n}"><h3>${pLabel(p)} <span>${p.emo} ${esc(p.t.fr)}</span> <span class="lu-small">${U('page')} ${p.pg}</span></h3>${T(p.t.zh,p.t.en)}
+/* ---------- ANIMATED SCENES (Grok Imagine clips, lazy-loaded, captions follow language) ---------- */
+const WHO={l:['🧓','Le luthier','製琴師','The luthier'],m:['🎻','Un musicien','一位音樂家','A musician'],d:['💃','Une dame','一位女士','A lady'],a:['🎭',"L'artiste",'藝術家','The artist']};
+const SCN={1:[[0,7.3,'l',"Bonjour ! Voici ma boutique. Derrière, il y a mon jardin et mon grand arbre.","你好！這是我的店。後面有我的花園和我的大樹。","Hello! Here is my shop. Behind it are my garden and my big tree."]],
+2:[[0,6.6,'l',"Mon bel arbre… Écoute les oiseaux. C'est plus beau que la musique des théâtres !","我美麗的樹……聽聽這些鳥兒。這比劇院裡的音樂還美！","My beautiful tree… Listen to the birds. It's more beautiful than the music of the theatres!"]],
+3:[[0,5.4,'l',"Le printemps est revenu… mais mon arbre n'a plus de feuilles.","春天回來了……可是我的樹再也沒有葉子了。","Spring has come back… but my tree has no more leaves."],[5.6,8.1,'l',"Il est mort.","它死了。","It is dead."]],
+4:[[0,5.6,'l',"Doucement, messieurs ! Attention à mon petit jardin. Je garde tout le bois.","先生們，輕一點！小心我的小花園。所有的木頭我都要留著。","Gently, gentlemen! Mind my little garden. I'm keeping all the wood."]],
+5:[[0,4,'m',"Maître, je voudrais votre plus beau violon !","師傅，我想要您最好的小提琴！","Master, I would like your finest violin!"],[4,6.6,'l',"Bien sûr, monsieur.","當然，先生。","Of course, sir."]],
+6:[[0,7.3,'l',"Avec le bois de mon arbre, j'ai fait le plus beau violoncelle du monde.","我用我那棵樹的木頭，做出了世界上最美的大提琴。","With the wood of my tree, I made the most beautiful cello in the world."]],
+7:[[0,5.6,'d',"C'est le carnaval ! Venez danser avec nous !","嘉年華會來了！來跟我們一起跳舞吧！","It's carnival! Come and dance with us!"]],
+8:[[0,3,'d',"Oh, quels beaux instruments !","哦，多美的樂器啊！","Oh, what beautiful instruments!"],[3,5.6,'a',"Bravo, maître luthier !","太棒了，製琴大師！","Bravo, master luthier!"]],
+9:[[0,4.4,'d',"Quelle horreur ! Ce violoncelle grince ! Partons !","太可怕了！這把大提琴吱吱嘎嘎的！我們走吧！","How awful! This cello squeaks! Let's go!"]],
+10:[[0,6.2,'a',"Plus de masque, plus de perruque. Maintenant, je joue avec mon cœur.","不要面具，不要假髮。現在，我用我的心來演奏。","No more mask, no more wig. Now I play with my heart."]],
+11:[[0,6.4,'l',"Cette musique… c'est mon arbre ! Il chante encore.","這音樂……是我的樹！它又在唱歌了。","This music… it's my tree! It is singing again."]]};
+(function(){const s=document.createElement('style');s.textContent=`
+.lu-scene{margin:-16px -16px 12px;position:relative;overflow:hidden;border-radius:18px 18px 0 0;background:#2b1c10;aspect-ratio:16/8.7}
+.lu-scene img,.lu-scene video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.lu-scene img{opacity:0;transform:scale(1.08);transition:opacity .9s ease}
+.lu-scene.has-p img{opacity:1}.lu-scene.in img{animation:luKB 14s ease-out forwards}
+.lu-scene video{opacity:0;transition:opacity .8s ease}.lu-scene.vid video{opacity:1}
+@keyframes luKB{from{transform:scale(1.08) translate(1.5%,1%)}to{transform:scale(1) translate(0,0)}}
+.lu-snd{position:absolute;right:10px;top:10px;z-index:3;border:0;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;font-size:1.05rem;min-width:44px;min-height:44px;padding:6px 12px;font-weight:700;cursor:pointer;backdrop-filter:blur(4px)}
+.lu-snd.on{background:var(--wood)}
+.lu-snd .lbl{font-size:.8rem;margin-left:4px}
+.lu-cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:22px 12px 9px;background:linear-gradient(transparent,rgba(0,0,0,.78));color:#fff;text-align:center;pointer-events:none;opacity:0;transition:opacity .4s}
+.lu-cap.show{opacity:1}html[data-lulang=zh] .lu-cap .who .tz,html[data-lulang=en] .lu-cap .who .te{display:inline!important;color:#fff;font-size:.75rem;padding:0;border:0;margin:0}.lu-cap .cf{font-weight:800;font-size:.95rem;line-height:1.35;text-shadow:0 1px 3px #000}.lu-cap .who{font-size:.75rem;opacity:.85;font-weight:700}
+.lu-cap .T{font-size:.86rem;opacity:.95;line-height:1.3;text-shadow:0 1px 3px #000;color:#ffe7c2}
+html[data-lulang=fr] .lu-cap .T{display:none!important}
+.lu-load{position:absolute;left:10px;top:12px;z-index:3;color:#fff;font-size:.75rem;background:rgba(0,0,0,.45);border-radius:999px;padding:3px 9px}
+.lu-reader .lu-para{transform-origin:left center;opacity:0;transform:perspective(1200px) rotateY(-9deg) translateX(14px)}
+.lu-reader .lu-para.turned{animation:luTurn .75s cubic-bezier(.2,.7,.2,1) forwards}
+.lu-reader .lu-para::after{content:"";position:absolute;top:0;right:0;width:26px;height:26px;background:linear-gradient(225deg,var(--bg,#f6efe6) 50%,rgba(0,0,0,.08) 50%);border-radius:0 0 0 10px;pointer-events:none}
+.lu-reader .lu-para{position:relative}
+@keyframes luTurn{to{opacity:1;transform:none}}
+@media (max-width:480px){.lu-cap{padding:16px 8px 6px}.lu-cap .cf{font-size:.86rem}.lu-cap .T{font-size:.78rem}.lu-snd{min-height:38px;min-width:40px;padding:4px 10px;font-size:.95rem}}
+@media (prefers-reduced-motion:reduce){.lu-scene.in img{animation:none;transform:none}.lu-reader .lu-para{opacity:1;transform:none}.lu-reader .lu-para.turned{animation:none}}
+`;document.head.appendChild(s)})();
+function sceneHTML(n){if(!SCN[n])return '';return `<figure class="lu-scene" data-scn="${n}"><img alt="" decoding="async"><video muted loop playsinline preload="none" aria-label="Scène ${n}"></video>
+<span class="lu-load">🎬 …</span><button type="button" class="lu-snd" data-snd="${n}" aria-label="Son">🔇<span class="lbl">${U('sndOn')}</span></button><div class="lu-cap" aria-live="polite"></div></figure>`}
+let POST=null;const vcacheL={};
+function mediaV(){return window.ASSET_V||'1'}
+function loadPosters(){if(POST)return POST;POST=fetch('luvid/posters.json?v='+mediaV()).then(r=>r.ok?r.json():{}).catch(()=>({}));return POST}
+async function loadClip(n){if(vcacheL[n])return vcacheL[n];return vcacheL[n]=(async()=>{const r=await fetch('luvid/v'+String(n).padStart(2,'0')+'.b64?v='+mediaV());if(!r.ok)throw new Error(r.status);const t=(await r.text()).trim();const b=atob(t);const u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return URL.createObjectURL(new Blob([u],{type:'video/mp4'}))})()}
+function capRender(f){const v=f.querySelector('video'),c=f.querySelector('.lu-cap'),cues=SCN[+f.dataset.scn]||[];const t=v.currentTime;const q=cues.find(x=>t>=x[0]&&t<x[1]);const k=q?q.join('|'):'';if(c.dataset.k===k)return;c.dataset.k=k;
+ if(!q){c.classList.remove('show');return}const w=WHO[q[2]];c.innerHTML=`<div class="who">${w[0]} ${esc(w[1])}<span class="T tz"> · ${esc(w[2])}</span><span class="T te"> · ${esc(w[3])}</span></div><div class="cf" lang="fr">${esc(q[3])}</div>${T(q[4],q[5])}`;c.classList.add('show')}
+function muteScenes(except){document.querySelectorAll('.lu-scene').forEach(f=>{if(f===except)return;const v=f.querySelector('video');v.muted=true;const b=f.querySelector('.lu-snd');b.classList.remove('on');b.innerHTML=`🔇<span class="lbl">${U('sndOn')}</span>`})}
+async function startScene(f){const n=+f.dataset.scn,v=f.querySelector('video');if(f.dataset.st)return;f.dataset.st='1';
+ try{const u=await loadClip(n);v.src=u;v.addEventListener('timeupdate',()=>capRender(f));v.addEventListener('playing',()=>{f.classList.add('vid');const l=f.querySelector('.lu-load');if(l)l.remove()},{once:true});
+  if(f.dataset.vis==='1'){const p=v.play();if(p&&p.catch)p.catch(()=>{})}}catch(e){const l=f.querySelector('.lu-load');if(l)l.textContent='🖼️';f.dataset.st=''}}
+let scIO=null,turnIO=null;
+function initScenes(root){loadPosters().then(P0=>{root.querySelectorAll('.lu-scene').forEach(f=>{const s=P0[f.dataset.scn];if(s){const im=f.querySelector('img');im.onload=()=>f.classList.add('has-p');im.src='data:image/jpeg;base64,'+s}})});
+ if(scIO)scIO.disconnect();if(turnIO)turnIO.disconnect();
+ const fs=[...root.querySelectorAll('.lu-scene')];
+ if(!('IntersectionObserver' in window)){root.querySelectorAll('.lu-para').forEach(p=>p.classList.add('turned'));fs.forEach(f=>{f.classList.add('in');f.dataset.vis='1';startScene(f)});return}
+ scIO=new IntersectionObserver(es=>es.forEach(e=>{const f=e.target,v=f.querySelector('video');
+  if(e.isIntersecting){f.classList.add('in');f.dataset.vis='1';if(!f.dataset.st)startScene(f);else if(v.src){const p=v.play();if(p&&p.catch)p.catch(()=>{})}}
+  else{f.dataset.vis='0';if(v.src&&!v.paused)v.pause()}}),{rootMargin:'250px 0px',threshold:0.2});
+ fs.forEach(f=>scIO.observe(f));
+ turnIO=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('turned');turnIO.unobserve(e.target)}}),{threshold:0.06});
+ root.querySelectorAll('.lu-para').forEach(p=>turnIO.observe(p))}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-snd]');if(!b)return;const f=b.closest('.lu-scene'),v=f.querySelector('video');
+ if(!v.src){f.dataset.vis='1';startScene(f).then(()=>{if(v.src)b.click()});return}
+ if(v.muted){stopAudio();muteScenes(f);v.muted=false;try{v.currentTime=0}catch(_){}const p=v.play();if(p&&p.catch)p.catch(()=>{});b.classList.add('on');b.innerHTML=`🔊<span class="lbl">${U('sndOff')}</span>`}
+ else{v.muted=true;b.classList.remove('on');b.innerHTML=`🔇<span class="lbl">${U('sndOn')}</span>`}});
+window.addEventListener('hashchange',()=>{document.querySelectorAll('.lu-scene video').forEach(v=>{try{v.pause()}catch(e){}})});
+function paraCard(p,o={}){return `<div class="card lu-para${o.tr?' showtr':''}" id="lp${p.n}">${o.scene?sceneHTML(+p.n):''}<h3>${pLabel(p)} <span>${p.emo} ${esc(p.t.fr)}</span> <span class="lu-small">${U('page')} ${p.pg}</span></h3>${T(p.t.zh,p.t.en)}
 <div class="lu-row"><button type="button" class="lu-say" data-lusay="${esc(p.tts)}" data-p="${p.n}">▶ ${U('listen')}</button><button type="button" class="lu-say" data-lusay="${esc(p.tts)}" data-slow="1" data-p="${p.n}">🐢 ${U('slow')}</button><button type="button" class="lu-btn lu-trb${o.tr?' on':''}" data-trp="${p.n}">🌐 ${U('trans')}</button></div>${o.extra||''}
 ${p.seg.map((s,i)=>`<div class="lu-line"><div class="lu-fr" lang="fr">${lineHTML(s)}</div>${T(p.zh[i],p.en[i])}</div>`).join('')}
 ${p.note.length?`<details class="lu-note"><summary>📝 ${U('note')}</summary>${p.note.map(n=>`<p>${esc(n)}</p>`).join('')}</details>`:''}</div>`}
@@ -181,10 +246,10 @@ function home(){const ob=st.get('oralBest',null);const recs=st.get('best',{});co
 <p style="text-align:center;margin-top:16px"><label class="lu-small"><input type="checkbox" id="luSfx" ${sfxOn?'checked':''}> 🔔 SFX</label></p>`}
 function bindHome(){const c=$('#luSfx');if(c)c.onchange=e=>{sfxOn=e.target.checked;st.set('sfx',sfxOn)}}
 /* ---------- READER ---------- */
-function reader(n){return `${top(U('read'))}<div class="lu-head" style="padding:14px 18px"><h1 style="font-size:1.4rem">📖 ${U('read')}</h1><p class="lu-small" style="color:#fff">💡 ${U('tapWord')} · ▶ / 🐢</p>
+function reader(n){return `${top(U('read'))}<div class="lu-head" style="padding:14px 18px"><h1 style="font-size:1.4rem">📖 ${U('read')}</h1><p class="lu-small" style="color:#fff">💡 ${U('tapWord')} · ▶ / 🐢</p><p class="lu-small" style="color:#fff">${U('animTip')}</p>
 <div class="lu-row"><button type="button" class="lu-btn" id="luAllTr" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.4)">🌐 ${U('allTrans')}</button></div></div>
-${P.map(p=>paraCard(p,{tr:st.get('allTr',false)})).join('')}`}
-function bindReader(n){loadG('p');loadG('x');const b=$('#luAllTr');let on=st.get('allTr',false);b.classList.toggle('on',on);
+<div class="lu-reader">${P.map(p=>paraCard(p,{tr:st.get('allTr',false),scene:1})).join('')}</div>`}
+function bindReader(n){loadG('p');loadG('x');const rd=document.querySelector('.lu-reader');if(rd)initScenes(rd);const b=$('#luAllTr');let on=st.get('allTr',false);b.classList.toggle('on',on);
  b.onclick=()=>{on=!on;st.set('allTr',on);b.classList.toggle('on',on);document.querySelectorAll('.lu-para').forEach(c=>{c.classList.toggle('showtr',on);c.querySelector('.lu-trb').classList.toggle('on',on)})};
  if(n){const el=document.getElementById('lp'+n);if(el)setTimeout(()=>toTop(el),50)}
 }
