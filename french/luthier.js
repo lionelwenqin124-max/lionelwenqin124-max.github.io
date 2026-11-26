@@ -167,19 +167,19 @@ document.addEventListener('click',e=>{const g=e.target.closest&&e.target.closest
 window.addEventListener('hashchange',()=>{const s=document.getElementById('luSheet');if(s)s.classList.remove('open');stopAudio();if(rec)try{rec.stop()}catch(e){};if(mr)try{mr.stop()}catch(e){}});
 /* ---------- ANIMATED SCENES (Grok Imagine clips, lazy-loaded, captions follow language) ---------- */
 const WHO={l:['🧓','Le luthier','製琴師','The luthier'],m:['🎻','Un musicien','一位音樂家','A musician'],d:['💃','Une dame','一位女士','A lady'],a:['🎭',"L'artiste",'藝術家','The artist']};
-const SCN={1:[[0,7.3,'l',"Bonjour ! Voici ma boutique. Derrière, il y a mon jardin et mon grand arbre.","你好！這是我的店。後面有我的花園和我的大樹。","Hello! Here is my shop. Behind it are my garden and my big tree."]],
-2:[[0,6.6,'l',"Mon bel arbre… Écoute les oiseaux. C'est plus beau que la musique des théâtres !","我美麗的樹……聽聽這些鳥兒。這比劇院裡的音樂還美！","My beautiful tree… Listen to the birds. It's more beautiful than the music of the theatres!"]],
-3:[[0,5.4,'l',"Le printemps est revenu… mais mon arbre n'a plus de feuilles.","春天回來了……可是我的樹再也沒有葉子了。","Spring has come back… but my tree has no more leaves."],[5.6,8.1,'l',"Il est mort.","它死了。","It is dead."]],
-4:[[0,5.6,'l',"Doucement, messieurs ! Attention à mon petit jardin. Je garde tout le bois.","先生們，輕一點！小心我的小花園。所有的木頭我都要留著。","Gently, gentlemen! Mind my little garden. I'm keeping all the wood."]],
-5:[[0,4,'m',"Maître, je voudrais votre plus beau violon !","師傅，我想要您最好的小提琴！","Master, I would like your finest violin!"],[4,6.6,'l',"Bien sûr, monsieur.","當然，先生。","Of course, sir."]],
-6:[[0,7.3,'l',"Avec le bois de mon arbre, j'ai fait le plus beau violoncelle du monde.","我用我那棵樹的木頭，做出了世界上最美的大提琴。","With the wood of my tree, I made the most beautiful cello in the world."]],
-7:[[0,5.6,'d',"C'est le carnaval ! Venez danser avec nous !","嘉年華會來了！來跟我們一起跳舞吧！","It's carnival! Come and dance with us!"]],
-8:[[0,3,'d',"Oh, quels beaux instruments !","哦，多美的樂器啊！","Oh, what beautiful instruments!"],[3,5.6,'a',"Bravo, maître luthier !","太棒了，製琴大師！","Bravo, master luthier!"]],
-9:[[0,4.4,'d',"Quelle horreur ! Ce violoncelle grince ! Partons !","太可怕了！這把大提琴吱吱嘎嘎的！我們走吧！","How awful! This cello squeaks! Let's go!"]],
-10:[[0,6.2,'a',"Plus de masque, plus de perruque. Maintenant, je joue avec mon cœur.","不要面具，不要假髮。現在，我用我的心來演奏。","No more mask, no more wig. Now I play with my heart."]],
-11:[[0,6.4,'l',"Cette musique… c'est mon arbre ! Il chante encore.","這音樂……是我的樹！它又在唱歌了。","This music… it's my tree! It is singing again."]]};
+const SCN={1:[[0,6.8,'l',"Bonjour ! Voici ma boutique. Derrière, il y a mon jardin et mon grand arbre.","你好！這是我的店。後面有我的花園和我的大樹。","Hello! Here is my shop. Behind it are my garden and my big tree."]],
+2:[[0,6.8,'l',"Mon bel arbre… Écoute les oiseaux. C'est plus beau que la musique des théâtres !","我美麗的樹……聽聽這些鳥兒。這比劇院裡的音樂還美！","My beautiful tree… Listen to the birds. It's more beautiful than the music of the theatres!"]],
+3:[[0.8,5.3,'l',"Le printemps est revenu… mais mon arbre n'a plus de feuilles.","春天回來了……可是我的樹再也沒有葉子了。","Spring has come back… but my tree has no more leaves."],[5.9,7.6,'l',"Il est mort.","它死了。","It is dead."]],
+4:[[0.7,6.8,'l',"Doucement, messieurs ! Attention à mon petit jardin. Je garde tout le bois.","先生們，輕一點！小心我的小花園。所有的木頭我都要留著。","Gently, gentlemen! Mind my little garden. I'm keeping all the wood."]],
+5:[[2.2,5.1,'m',"Maître, je voudrais votre plus beau violon !","師傅，我想要您最好的小提琴！","Master, I would like your finest violin!"],[5.2,6.8,'l',"Bien sûr, monsieur.","當然，先生。","Of course, sir."]],
+6:[[2,7.7,'l',"Avec le bois de mon arbre, j'ai fait le plus beau violoncelle du monde.","我用我那棵樹的木頭，做出了世界上最美的大提琴。","With the wood of my tree, I made the most beautiful cello in the world."]],
+7:[[0,4.8,'d',"C'est le carnaval ! Venez danser avec nous !","嘉年華會來了！來跟我們一起跳舞吧！","It's carnival! Come and dance with us!"]],
+8:[[0,3.2,'d',"Oh, quels beaux instruments !","哦，多美的樂器啊！","Oh, what beautiful instruments!"],[3.3,5.7,'a',"Bravo, maître luthier !","太棒了，製琴大師！","Bravo, master luthier!"]],
+9:[[0,3.8,'d',"Quelle horreur ! Ce violoncelle grince ! Partons !","太可怕了！這把大提琴吱吱嘎嘎的！我們走吧！","How awful! This cello squeaks! Let's go!"]],
+10:[[0,5.8,'a',"Plus de masque, plus de perruque. Maintenant, je joue avec mon cœur.","不要面具，不要假髮。現在，我用我的心來演奏。","No more mask, no more wig. Now I play with my heart."]],
+11:[[0.8,5.6,'l',"Cette musique… c'est mon arbre ! Il chante encore.","這音樂……是我的樹！它又在唱歌了。","This music… it's my tree! It is singing again."]]};
 (function(){const s=document.createElement('style');s.textContent=`
-.lu-scene{margin:-16px -16px 12px;position:relative;overflow:hidden;border-radius:18px 18px 0 0;background:#2b1c10;aspect-ratio:16/8.7}
+.lu-scene{margin:-16px -16px 12px;position:relative;overflow:hidden;border-radius:18px 18px 0 0;background:#2b1c10;aspect-ratio:16/9}
 .lu-scene img,.lu-scene video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .lu-scene img{opacity:0;transform:scale(1.08);transition:opacity .9s ease}
 .lu-scene.has-p img{opacity:1}.lu-scene.in img{animation:luKB 14s ease-out forwards}
@@ -187,6 +187,7 @@ const SCN={1:[[0,7.3,'l',"Bonjour ! Voici ma boutique. Derrière, il y a mon jar
 @keyframes luKB{from{transform:scale(1.08) translate(1.5%,1%)}to{transform:scale(1) translate(0,0)}}
 .lu-snd{position:absolute;right:10px;top:10px;z-index:3;border:0;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;font-size:1.05rem;min-width:44px;min-height:44px;padding:6px 12px;font-weight:700;cursor:pointer;backdrop-filter:blur(4px)}
 .lu-snd.on{background:var(--wood)}
+.lu-hd{position:absolute;left:10px;top:12px;z-index:2;color:#fff;font:800 .62rem/1 system-ui;letter-spacing:.06em;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.6);border-radius:4px;padding:3px 5px;opacity:0;transition:opacity .4s}.lu-scene.vid .lu-hd{opacity:.85}
 .lu-snd .lbl{font-size:.8rem;margin-left:4px}
 .lu-cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:22px 12px 9px;background:linear-gradient(transparent,rgba(0,0,0,.78));color:#fff;text-align:center;pointer-events:none;opacity:0;transition:opacity .4s}
 .lu-cap.show{opacity:1}html[data-lulang=zh] .lu-cap .who .tz,html[data-lulang=en] .lu-cap .who .te{display:inline!important;color:#fff;font-size:.75rem;padding:0;border:0;margin:0}.lu-cap .cf{font-weight:800;font-size:.95rem;line-height:1.35;text-shadow:0 1px 3px #000}.lu-cap .who{font-size:.75rem;opacity:.85;font-weight:700}
@@ -202,11 +203,18 @@ html[data-lulang=fr] .lu-cap .T{display:none!important}
 @media (prefers-reduced-motion:reduce){.lu-scene.in img{animation:none;transform:none}.lu-reader .lu-para{opacity:1;transform:none}.lu-reader .lu-para.turned{animation:none}}
 `;document.head.appendChild(s)})();
 function sceneHTML(n){if(!SCN[n])return '';return `<figure class="lu-scene" data-scn="${n}"><img alt="" decoding="async"><video muted loop playsinline preload="none" aria-label="Scène ${n}"></video>
-<span class="lu-load">🎬 …</span><button type="button" class="lu-snd" data-snd="${n}" aria-label="Son">🔇<span class="lbl">${U('sndOn')}</span></button><div class="lu-cap" aria-live="polite"></div></figure>`}
+<span class="lu-load">🎬 HD …</span><span class="lu-hd" aria-hidden="true">HD</span><button type="button" class="lu-snd" data-snd="${n}" aria-label="Son">🔇<span class="lbl">${U('sndOn')}</span></button><div class="lu-cap" aria-live="polite"></div></figure>`}
 let POST=null;const vcacheL={};
 function mediaV(){return window.ASSET_V||'1'}
 function loadPosters(){if(POST)return POST;POST=fetch('luvid/posters.json?v='+mediaV()).then(r=>r.ok?r.json():{}).catch(()=>({}));return POST}
-async function loadClip(n){if(vcacheL[n])return vcacheL[n];return vcacheL[n]=(async()=>{const r=await fetch('luvid/v'+String(n).padStart(2,'0')+'.b64?v='+mediaV());if(!r.ok)throw new Error(r.status);const t=(await r.text()).trim();const b=atob(t);const u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return URL.createObjectURL(new Blob([u],{type:'video/mp4'}))})()}
+function lite(){const c=navigator.connection||{};return !!(c.saveData||/(^|-)2g$/.test(c.effectiveType||''))}
+function b64url(t,type){const b=atob(t.trim());const u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return URL.createObjectURL(new Blob([u],{type}))}
+async function loadClip(n){if(vcacheL[n])return vcacheL[n];const nn=String(n).padStart(2,'0');return vcacheL[n]=(async()=>{
+ const get=async u=>{const r=await fetch(u+'?v='+mediaV());if(!r.ok)throw new Error(r.status);return (await r.text()).trim()};
+ if(!lite()){try{const parts=await Promise.all(['a','b','c'].map(x=>get('luvid/hd/h'+nn+x+'.b64')));return b64url(parts.join(''),'video/mp4')}catch(e){}}
+ try{return b64url(await get('luvid/v'+nn+'.b64'),'video/mp4')}catch(e){}
+ throw new Error('clip '+n)})()}
+const hpost={};function loadHDPoster(f){const n=f.dataset.scn;if(hpost[n]||lite())return;hpost[n]=1;fetch('luvid/hd/p'+String(n).padStart(2,'0')+'.b64?v='+mediaV()).then(r=>r.ok?r.text():null).then(t=>{if(!t)return;const im=f.querySelector('img');const u=b64url(t,'image/jpeg');const pre=new Image();pre.onload=()=>{im.src=u;f.classList.add('has-p')};pre.src=u}).catch(()=>{})}
 function capRender(f){const v=f.querySelector('video'),c=f.querySelector('.lu-cap'),cues=SCN[+f.dataset.scn]||[];const t=v.currentTime;const q=cues.find(x=>t>=x[0]&&t<x[1]);const k=q?q.join('|'):'';if(c.dataset.k===k)return;c.dataset.k=k;
  if(!q){c.classList.remove('show');return}const w=WHO[q[2]];c.innerHTML=`<div class="who">${w[0]} ${esc(w[1])}<span class="T tz"> · ${esc(w[2])}</span><span class="T te"> · ${esc(w[3])}</span></div><div class="cf" lang="fr">${esc(q[3])}</div>${T(q[4],q[5])}`;c.classList.add('show')}
 function muteScenes(except){document.querySelectorAll('.lu-scene').forEach(f=>{if(f===except)return;const v=f.querySelector('video');v.muted=true;const b=f.querySelector('.lu-snd');b.classList.remove('on');b.innerHTML=`🔇<span class="lbl">${U('sndOn')}</span>`})}
@@ -217,9 +225,9 @@ let scIO=null,turnIO=null;
 function initScenes(root){loadPosters().then(P0=>{root.querySelectorAll('.lu-scene').forEach(f=>{const s=P0[f.dataset.scn];if(s){const im=f.querySelector('img');im.onload=()=>f.classList.add('has-p');im.src='data:image/jpeg;base64,'+s}})});
  if(scIO)scIO.disconnect();if(turnIO)turnIO.disconnect();
  const fs=[...root.querySelectorAll('.lu-scene')];
- if(!('IntersectionObserver' in window)){root.querySelectorAll('.lu-para').forEach(p=>p.classList.add('turned'));fs.forEach(f=>{f.classList.add('in');f.dataset.vis='1';startScene(f)});return}
+ if(!('IntersectionObserver' in window)){root.querySelectorAll('.lu-para').forEach(p=>p.classList.add('turned'));fs.forEach(f=>{f.classList.add('in');f.dataset.vis='1';loadHDPoster(f);startScene(f)});return}
  scIO=new IntersectionObserver(es=>es.forEach(e=>{const f=e.target,v=f.querySelector('video');
-  if(e.isIntersecting){f.classList.add('in');f.dataset.vis='1';if(!f.dataset.st)startScene(f);else if(v.src){const p=v.play();if(p&&p.catch)p.catch(()=>{})}}
+  if(e.isIntersecting){f.classList.add('in');f.dataset.vis='1';loadHDPoster(f);if(!f.dataset.st)startScene(f);else if(v.src){const p=v.play();if(p&&p.catch)p.catch(()=>{})}}
   else{f.dataset.vis='0';if(v.src&&!v.paused)v.pause()}}),{rootMargin:'250px 0px',threshold:0.2});
  fs.forEach(f=>scIO.observe(f));
  turnIO=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('turned');turnIO.unobserve(e.target)}}),{threshold:0.06});
