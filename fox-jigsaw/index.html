@@ -70,8 +70,8 @@ header{position:absolute;inset:0 0 auto;height:84px;background:#fff9ef;border-bo
 #board img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 #hint{opacity:0;transition:opacity .25s}#hint.on{opacity:.32}
 #full{opacity:0;transition:opacity .5s;z-index:30;border-radius:4px}#full.on{opacity:1}
-#tray{position:absolute;left:648px;top:6px;width:608px;height:450px;border:4px dashed #e2b98a;border-radius:18px;background:rgba(255,244,222,.6)}
-#trayLbl{position:absolute;left:12px;top:-2px;font-size:18px;color:#b08453}
+#tray{position:absolute;left:634px;top:0;width:640px;height:462px;border:4px dashed #e2b98a;border-radius:18px;background:rgba(255,244,222,.6)}
+#trayLbl{display:none;position:absolute;left:12px;top:-2px;font-size:18px;color:#b08453}
 #pieces{position:absolute;inset:0;z-index:10;pointer-events:none}
 .piece{position:absolute;pointer-events:auto;cursor:grab;box-shadow:0 3px 8px rgba(80,40,10,.35);outline:3px solid #fff;outline-offset:-3px;border-radius:6px;touch-action:none;transition:box-shadow .15s}
 .piece.drag{cursor:grabbing;box-shadow:0 12px 24px rgba(80,40,10,.45);transition:none}
@@ -154,7 +154,7 @@ kbd{background:#fff;border:2px solid #c49b67;border-bottom-width:4px;border-radi
 </head>
 <body>
 <div id="stage">
-  <div id="build">v3</div>
+  <div id="build">v4</div>
   <header id="top">
     <div id="titleTag"><b>Fox Jigsaw</b><span>狐狸拼圖</span></div>
     <div id="prompt">Fox can fix it!<small>狐狸會修好它！</small></div>
@@ -268,7 +268,7 @@ var CLIPS={
 </script>
 <script>(function(){
 'use strict';
-var KEY='foxJigsaw.v3';
+var KEY='foxJigsaw.v4';
 var $=function(id){return document.getElementById(id)};
 var S=fresh(loadSettings());
 function fresh(o){o=o||{};return {muted:!!o.muted,phase:'start',round:0,team:0,times:[null,null],scores:[0,0],hint:false,t0:0,elapsed:0,token:0,awarded:null};}
@@ -321,17 +321,17 @@ function zoomGuard(){ clearTimeout(zgT); zgT=setTimeout(function(){ if(!zoomed()
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 function show(id,on){$(id).classList.toggle('show',!!on)}
 var ROUNDS=[
- {s:'Fox has a toy box.',zh:'狐狸有一個玩具箱。',no:['狐狸有一台玩具車。','箱子壞了。'],img:'img/fox1.jpg',vid:'video/fox1.mp4.b64',c:2,r:2},
- {s:'The box is broken.',zh:'箱子壞了。',no:['箱子是新的。','玩具掉出來了。'],img:'img/fox2.jpg',vid:'video/fox2.mp4.b64',c:2,r:2},
- {s:'The toys fall out.',zh:'玩具掉出來了。',no:['玩具放進去了。','箱子壞了。'],img:'img/fox3.jpg',vid:'video/fox3.mp4.b64',c:3,r:2},
- {s:'Fox is sad.',zh:'狐狸很傷心。',no:['狐狸很開心。','狐狸很聰明。'],img:'img/fox4.jpg',vid:'video/fox4.mp4.b64',c:3,r:2},
- {s:'Fox is smart.',zh:'狐狸很聰明。',no:['狐狸很傷心。','狐狸很累。'],img:'img/fox5.jpg',vid:'video/fox5.mp4.b64',c:3,r:2},
- {s:'He can fix it.',zh:'他可以修好它。',no:['他不能修好它。','他有一個玩具箱。'],img:'img/fox6.jpg',vid:'video/fox6.mp4.b64',c:3,r:3},
- {s:'Fox is happy.',zh:'狐狸很開心。',no:['狐狸很傷心。','狐狸很聰明。'],img:'img/fox7.jpg',vid:'video/fox7.mp4.b64',c:3,r:3}];
+ {s:'Fox has a toy box.',zh:'狐狸有一個玩具箱。',no:['狐狸有一台玩具車。','箱子壞了。'],img:'img/fox1.jpg',vid:'video/fox1.mp4.b64',c:5,r:3},
+ {s:'The box is broken.',zh:'箱子壞了。',no:['箱子是新的。','玩具掉出來了。'],img:'img/fox2.jpg',vid:'video/fox2.mp4.b64',c:5,r:3},
+ {s:'The toys fall out.',zh:'玩具掉出來了。',no:['玩具放進去了。','箱子壞了。'],img:'img/fox3.jpg',vid:'video/fox3.mp4.b64',c:5,r:3},
+ {s:'Fox is sad.',zh:'狐狸很傷心。',no:['狐狸很開心。','狐狸很聰明。'],img:'img/fox4.jpg',vid:'video/fox4.mp4.b64',c:5,r:3},
+ {s:'Fox is smart.',zh:'狐狸很聰明。',no:['狐狸很傷心。','狐狸很累。'],img:'img/fox5.jpg',vid:'video/fox5.mp4.b64',c:5,r:3},
+ {s:'He can fix it.',zh:'他可以修好它。',no:['他不能修好它。','他有一個玩具箱。'],img:'img/fox6.jpg',vid:'video/fox6.mp4.b64',c:5,r:3},
+ {s:'Fox is happy.',zh:'狐狸很開心。',no:['狐狸很傷心。','狐狸很聰明。'],img:'img/fox7.jpg',vid:'video/fox7.mp4.b64',c:5,r:3}];
 // answer position per round for Team A / Team B (fixed, always different between teams)
 var ANS=[[1,2],[0,1],[2,0],[1,0],[0,2],[2,1],[1,2]];
 function optionsFor(round,team){ var r=ROUNDS[round], pos=ANS[round][team], o=r.no.slice(); if((round+team)%2) o.reverse(); o.splice(pos,0,r.zh); return {opts:o,pos:pos}; }
-var BX=24, BY=6, BW=600, BH=450, TX=652, TY=10, TW=600, TH=442;   // board + tray (play-area coords)
+var BX=24, BY=6, BW=600, BH=450, TX=640, TY=4, TW=626, TH=454;   // 15 pieces (5x3) of 120x150; tray spots 125x151 so pieces sit apart   // board + tray (play-area coords)
 var TEAM=['Team A','Team B'];
 function R(){return ROUNDS[S.round]}
 $('thumbs').innerHTML=ROUNDS.map(function(r,i){return '<div class="tile">🧩<b>'+(i+1)+'</b></div>'}).join('');   // no picture peeks on the start screen
@@ -560,7 +560,7 @@ document.addEventListener('keydown',function(e){ if(e.repeat)return; var k=e.key
 
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('button'); if(b) b.blur(); });  // Space/Enter never re-click a button
 preload(); render();
-window.__fj={build:'v3', get state(){return S}, rounds:ROUNDS, pieces:function(){return P.map(function(p){var r=p.el.getBoundingClientRect();return {i:p.i,placed:p.placed,x:p.x,y:p.y,w:p.w,h:p.h,slot:slotOf(p),cx:r.left+r.width/2,cy:r.top+r.height/2};})},
+window.__fj={build:'v4', get state(){return S}, rounds:ROUNDS, pieces:function(){return P.map(function(p){var r=p.el.getBoundingClientRect();return {i:p.i,placed:p.placed,x:p.x,y:p.y,w:p.w,h:p.h,slot:slotOf(p),cx:r.left+r.width/2,cy:r.top+r.height/2};})},
   slotClient:function(i){ var p=P.filter(function(q){return q.i===i})[0], s=slotOf(p), k=stageK(), pr=$('play').getBoundingClientRect(); return {x:pr.left+(s.x+p.w/2)*k, y:pr.top+(s.y+p.h/2)*k}; },
   decide:decide, perms:function(){return perms}, clips:CLIPS, optionsFor:optionsFor, vids:function(){return Object.keys(VID).map(Number)}};
 })();
